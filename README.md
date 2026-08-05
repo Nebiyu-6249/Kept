@@ -186,46 +186,88 @@ fails on the things that cost a whole build to discover — a duplicate function
 table, a functions directory Netlify will not look in, a schedule that
 disagrees with the one in the function's own config.
 
+### Two Neon connection strings, and they are not interchangeable
+
+Neon gives you the same database over two different hosts. Getting them the
+wrong way round is the single most common way this deploy fails.
+
+| | Pooled | Direct |
+|---|---|---|
+| Goes in | `DATABASE_URL` | `DIRECT_URL` |
+| Host | contains **`-pooler`** | does **not** contain `-pooler` |
+| Where in Neon | Console → your project → **Connection Details**, with **"Connection pooling" ON** | the same panel, with **"Connection pooling" OFF** |
+| Used by | every query the app makes at runtime | `prisma migrate deploy`, during the build only |
+| Why | serverless functions open a connection per invocation and would exhaust a direct connection limit | migrations need a real session: advisory locks and DDL do not survive a transaction pooler |
+
+Pasting the pooled string into both is the failure `npm run preflight` exists
+to catch — it exits 1 and names it rather than letting migrations behave oddly.
+
 ### Environment variables
 
-Set these in **Site configuration → Environment variables**. Every one is
-server-side; **never prefix any of them with `NEXT_PUBLIC_`**, which would ship
-the value to the browser.
+Set these in **Site configuration → Environment variables**, and make sure each
+is available to the **Production** deploy context — a variable scoped only to a
+branch or preview context is invisible to the production build, which reads as
+"not set". Every one is server-side; **never prefix any with `NEXT_PUBLIC_`**,
+which would ship the value to the browser.
 
-| Variable | Scope | Why that scope |
-|---|---|---|
-| `DATABASE_URL` | **Functions + Builds** | The pooled Neon string. Functions query through it, and `prisma migrate deploy` needs it at build to resolve the datasource — missing it fails the build with `Environment variable not found: DATABASE_URL`. |
-| `DIRECT_URL` | **Builds** | The direct (unpooled) Neon string. `prisma migrate deploy` runs migrations over it during the build; missing it fails the build at the migration step, before `next build` starts. Runtime never uses it. |
-| `ANTHROPIC_API_KEY` | **Functions only** | Never needed at build. Scoping it to Functions keeps it out of the build environment entirely. |
-| `APP_TIMEZONE` | Functions + Builds | `Asia/Dubai`. Period boundaries and the `UsageCounter` day key. Falls back to `Asia/Dubai` if unset. |
-| `DEFAULT_CURRENCY` | Functions + Builds | `AED`. Falls back to `AED` if unset. |
-| `VERDICT_DAILY_LIMIT` | Functions | `100`. The daily cap on model calls. Falls back to `100` if unset. |
+| Variable | Scope | Value | Why that scope |
+|---|---|---|---|
+| `DATABASE_URL` | **Functions + Builds** | Neon **pooled** (`-pooler` in host) | Functions query through it, and `prisma migrate deploy` needs it at build to resolve the datasource. Missing it fails the build with `Environment variable not found: DATABASE_URL`. |
+| `DIRECT_URL` | **Builds** | Neon **direct** (no `-pooler`) | `prisma migrate deploy` runs migrations over it during the production build. Missing it is the `P1012` failure. **Runtime never reads it** — verified by querying with it absent — so Builds-only is correct and sufficient. |
+| `ANTHROPIC_API_KEY` | **Functions only** | `sk-ant-…` | Never needed at build. Functions-only keeps it out of the build environment entirely. The build preflight reports it as a warning, not a failure, because a build genuinely cannot see a Functions-scoped variable. |
+| `APP_TIMEZONE` | Functions + Builds | `Asia/Dubai` | Period boundaries and the `UsageCounter` day key. Defaults to `Asia/Dubai`. |
+| `DEFAULT_CURRENCY` | Functions + Builds | `AED` | Defaults to `AED`. |
+| `VERDICT_DAILY_LIMIT` | Functions | `100` | Daily cap on model calls. Defaults to `100`. |
 
 `URL` and `DEPLOY_PRIME_URL` are provided by Netlify and are what
-`POST /api/import` uses to reach the background function. Nothing needs setting
-for those.
+`POST /api/import` uses to reach the background function. Nothing to set.
 
 **Verified:** no client bundle contains any of these names or values.
 `npm run check:no-secrets` scans the real build output for the literal secret
 values, for Anthropic SDK markers, and for any `NEXT_PUBLIC_` variable named
 like a credential.
 
+### Preflight
+
+Every build command starts with a preflight that checks the whole environment
+and reports **every** problem at once, each with the scope it needs and where
+to find it in Neon — so one failed build tells you everything, not just the
+first thing.
+
+```bash
+npm run preflight              # what an ordinary build needs
+npm run preflight:migrations   # adds DIRECT_URL, for the production build
+npm run preflight:runtime      # what a deployed function needs
+```
+
+It reads `.env` the same way the Prisma CLI does, so a local run of the build
+command behaves exactly like the deploy.
+
 ### The build command
 
+Migrations run in **one context only**:
+
 ```
-prisma generate && prisma migrate deploy && next build
+[build]                 npm run preflight            && prisma generate &&                          next build
+[context.production]    npm run preflight:migrations && prisma generate && prisma migrate deploy && next build
 ```
+
+A deploy preview or branch deploy therefore never alters the production schema,
+and — because `next build` needs no database at all — touches Postgres zero
+times during its build.
 
 Each stage was checked against a real database:
 
 - **Fresh deploy** — `migrate deploy` applies every migration in
   `prisma/migrations`.
-- **Redeploy** — `migrate deploy` reports *No pending migrations to apply* and
-  changes nothing. It is safe to run on every build.
-- **`next build` needs no database at all.** Every route is `force-dynamic`, so
-  nothing queries at build time; a build with `DATABASE_URL` and `DIRECT_URL`
-  unset still succeeds. The only build-time database requirement is the
-  migration step.
+- **Redeploy** — reports *No pending migrations to apply* and changes nothing.
+- **`next build` needs no database.** Every route is `force-dynamic`, so a build
+  with `DATABASE_URL` and `DIRECT_URL` unset still succeeds. The only build-time
+  database requirement is the migration step.
+
+Run `npm run check:netlify` before pushing. Besides parsing the TOML it asserts
+that the default command does *not* migrate, that the production one does, and
+that its preflight is in `--migrations` mode.
 
 ### Functions
 

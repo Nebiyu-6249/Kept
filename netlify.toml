@@ -1,11 +1,22 @@
+# Default for every deploy context. Deliberately does NOT run migrations:
+# a deploy preview or a branch deploy must never alter the production schema.
+#
+# next build needs no database at all — every route is force-dynamic and
+# nothing queries at build time — so a preview build touches Postgres zero times.
 [build]
-  # prisma migrate deploy runs against the real database during the build, so
-  # both DATABASE_URL and DIRECT_URL must be set for Builds, not just Functions.
-  # It is idempotent: a fresh deploy applies every migration, a redeploy reports
-  # "No pending migrations to apply". next build itself needs no database — every
-  # route is force-dynamic and nothing queries at build time.
-  command = "prisma generate && prisma migrate deploy && next build"
+  command = "npm run preflight && prisma generate && next build"
   publish = ".next"
+
+# Production is the one context that migrates. Running it here rather than in a
+# separate CI job keeps the ordering guarantee for free: the migration finishes
+# immediately before the build that ships the code depending on it, with no
+# coordination between two systems racing on one database. See DECISIONS.md.
+#
+# The preflight runs first and in --migrations mode, so a missing or pooled
+# DIRECT_URL fails in seconds with an actionable message instead of three
+# minutes later as Prisma P1012.
+[context.production]
+  command = "npm run preflight:migrations && prisma generate && prisma migrate deploy && next build"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"

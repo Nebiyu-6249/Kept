@@ -219,3 +219,44 @@ constant that was never env-derived, which put `APP_TIMEZONE` and
 replaces non-public `process.env` reads with `undefined`, but server env
 plumbing should not ship at all. The unused `requireAnthropicKey` was dropped
 in the same pass.
+
+**Migrations run in the Netlify build, scoped to the production context.**
+The alternative considered was a separate CI job gated on the production
+branch. Keeping it in the build wins on one decisive point: **ordering**. The
+migration finishes immediately before the build that ships the code depending
+on it, in the same sequential command, with no coordination. Moving it to
+GitHub Actions puts two systems on one database that both trigger on a push to
+`main` and have no ordering guarantee between them — the new code can deploy
+before its migration lands. Buying that guarantee back means either
+expand-contract discipline on every migration or gating Netlify's publish on
+the Actions run, which is a lot of machinery for a single-user app with one
+database.
+
+What was genuinely wrong was not *where* it ran but *how often*: the command
+was the default for every deploy context, so a deploy preview or a branch
+deploy would have rewritten the production schema. That is fixed by scoping —
+`[build]` no longer migrates, `[context.production]` does, and
+`check:netlify` fails if that ever inverts.
+
+One premise worth correcting: a failed migration does not take the site down.
+A failed Netlify build is simply not published, so the previous deploy stays
+live and serving. The blast radius is "the deploy does not ship", not "the site
+is gone". `migrate deploy` is also a no-op when nothing is pending, so the
+majority of builds mutate nothing at all.
+
+This would flip if the project grew branch databases, more than one
+environment, or destructive migrations needing a controlled window — at that
+point a gated, manually-triggerable job is worth the coordination cost.
+
+**The preflight loads `.env` the way the Prisma CLI does.** Present-only, never
+overriding a real environment variable. Without it the preflight and the very
+next command in the build disagreed locally: Prisma read `.env` and succeeded
+while the preflight, seeing only `process.env`, reported the variable missing.
+On Netlify there is no `.env` and it is a no-op; the point is that running the
+build command locally behaves like the deploy.
+
+**`ANTHROPIC_API_KEY` is a preflight warning at build time, not a failure.**
+It is scoped to Functions only, which is correct, so a build cannot see it —
+failing the build over its absence would punish the right configuration. It is
+a hard failure under `--runtime`, which is the mode that checks what a deployed
+function needs.

@@ -156,19 +156,74 @@ for (const [name, table] of Object.entries(functions)) {
 /* ------------------------------------------------------------ build stage */
 
 const build = (config.build ?? {}) as Record<string, unknown>;
-const command = typeof build.command === "string" ? build.command : "";
+const contexts = (config.context ?? {}) as Record<string, { command?: unknown }>;
 
-if (!command.includes("prisma generate")) {
-  fail("[build] command", "Missing `prisma generate`; the client is not committed.");
-}
-if (!command.includes("prisma migrate deploy")) {
-  fail("[build] command", "Missing `prisma migrate deploy`; the schema would never be applied.");
-}
-if (command.includes("prisma migrate dev")) {
-  fail("[build] command", "Uses `migrate dev`, which is interactive and will hang a deploy.");
-}
+const defaultCommand = typeof build.command === "string" ? build.command : "";
+const productionCommand =
+  typeof contexts.production?.command === "string" ? contexts.production.command : defaultCommand;
+
 if (build.publish !== ".next") {
   fail("[build] publish", `Expected ".next" for @netlify/plugin-nextjs, found "${build.publish}".`);
+}
+
+for (const [label, command] of [
+  ["[build] command", defaultCommand],
+  ["[context.production] command", productionCommand],
+] as const) {
+  if (!command) {
+    fail(label, "Not set.");
+    continue;
+  }
+  if (!command.includes("prisma generate")) {
+    fail(label, "Missing `prisma generate`; the client is not committed to the repo.");
+  }
+  if (command.includes("prisma migrate dev")) {
+    fail(label, "Uses `migrate dev`, which is interactive and will hang a deploy.");
+  }
+  // The preflight is worthless unless it runs before anything that can fail on
+  // a missing variable.
+  if (!/^\s*npm run preflight/.test(command)) {
+    fail(
+      label,
+      "Does not start with the preflight; a missing variable would fail later and worse.",
+    );
+  }
+}
+
+/**
+ * Migrations belong to exactly one context. If the default command migrates,
+ * every deploy preview and branch deploy rewrites the production schema — which
+ * is the failure this whole arrangement exists to prevent.
+ */
+if (defaultCommand.includes("prisma migrate deploy")) {
+  fail(
+    "[build] command",
+    "Runs `prisma migrate deploy`. That is the default for every context, so deploy " +
+      "previews and branch deploys would migrate the production database. Move it to " +
+      "[context.production].",
+  );
+}
+if (!productionCommand.includes("prisma migrate deploy")) {
+  fail(
+    "[context.production] command",
+    "Missing `prisma migrate deploy`; the schema would never be applied on a real deploy.",
+  );
+}
+// Either `npm run preflight:migrations` or `npm run preflight -- --migrations`.
+const preflightChecksMigrations =
+  /preflight:migrations|preflight\s+--\s+--migrations|preflight.*--migrations/.test(
+    productionCommand,
+  );
+
+if (productionCommand.includes("prisma migrate deploy") && !preflightChecksMigrations) {
+  fail(
+    "[context.production] command",
+    "Migrates, but its preflight is not in --migrations mode, so a missing DIRECT_URL " +
+      "would slip through to Prisma P1012.",
+  );
+}
+if (!defaultCommand.includes("prisma migrate deploy")) {
+  notes.push("only [context.production] migrates; previews leave the schema alone");
 }
 
 const plugins = (config.plugins ?? []) as Array<{ package?: string }>;

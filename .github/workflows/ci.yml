@@ -46,6 +46,12 @@ jobs:
       - name: Validate netlify.toml
         run: npm run check:netlify
 
+      # The same preflight the production build runs. CI's DATABASE_URL is a
+      # local Postgres with no pooler, so warnings are expected; only genuine
+      # failures matter here.
+      - name: Preflight the build environment
+        run: npm run preflight:migrations
+
       - name: Generate Prisma client and apply migrations
         run: npx prisma generate && npx prisma migrate deploy
 
