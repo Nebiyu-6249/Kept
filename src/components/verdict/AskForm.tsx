@@ -189,7 +189,9 @@ export function AskForm({
                 <span className="t-label text-[var(--color-muted)]">{currency}</span>
                 <input
                   id="amount"
-                  className="tnum w-full border-0 bg-transparent py-2 font-[family-name:var(--font-mono)] text-[clamp(28px,5vw,38px)] font-500 tracking-[.02em] outline-none"
+                  // No outline-none here: the container's accent border is a
+                  // nice touch, not a replacement for a 2px focus ring (§16).
+                  className="tnum w-full border-0 bg-transparent py-2 font-[family-name:var(--font-mono)] text-[clamp(28px,5vw,38px)] font-500 tracking-[.02em]"
                   value={amount}
                   inputMode="decimal"
                   autoComplete="off"

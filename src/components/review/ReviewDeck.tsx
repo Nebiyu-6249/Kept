@@ -70,7 +70,10 @@ export function ReviewDeck({
   if (!current) {
     return (
       <div className="flex flex-col gap-4" aria-live="polite">
-        <Eyebrow>Nothing to review</Eyebrow>
+        <Eyebrow>Review</Eyebrow>
+        <h1 className="t-display-m">
+          <span>NOTHING</span> <span className="t-outline">TO REVIEW</span>
+        </h1>
         <p className="t-body max-w-[46ch] text-[var(--color-ink-2)]">
           {answered > 0
             ? `That is all of them. ${answered} answered, and each one makes the next verdict in that category better informed.`
@@ -91,9 +94,9 @@ export function ReviewDeck({
           </p>
         </div>
 
-        <h2 className="t-display-m">
+        <h1 className="t-display-m">
           <span>WORTH</span> <span className="t-outline">IT?</span>
-        </h2>
+        </h1>
 
         {error ? (
           <p role="alert" className="t-body text-[var(--color-accent)]">
