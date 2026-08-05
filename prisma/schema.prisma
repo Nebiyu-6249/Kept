@@ -1,0 +1,244 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id            String     @id @default(cuid())
+  displayName   String
+  currency      String     @default("AED")
+  periodType    PeriodType @default(MONTHLY)
+  periodAnchor  Int        @default(1) // day of month the period starts
+  monthlyIncome Int // fils
+  createdAt     DateTime   @default(now())
+
+  policy        Policy?
+  categories    Category[]
+  transactions  Transaction[]
+  intents       Intent[]
+  bills         Bill[]
+  importBatches ImportBatch[]
+  usageCounters UsageCounter[]
+  corrections   Correction[]
+}
+
+enum PeriodType {
+  MONTHLY
+  SEMIMONTHLY
+  WEEKLY
+}
+
+model Policy {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  body      String // the full plain-text policy, authored in onboarding
+  rules     Rule[]
+  version   Int      @default(1)
+  updatedAt DateTime @updatedAt
+}
+
+model Rule {
+  id       String   @id @default(cuid())
+  policyId String
+  policy   Policy   @relation(fields: [policyId], references: [id], onDelete: Cascade)
+  ref      String // stable short id shown in the UI, e.g. "R-03"
+  text     String // the user's own words, quoted verbatim in verdicts
+  kind     RuleKind
+  order    Int
+
+  @@unique([policyId, ref])
+}
+
+enum RuleKind {
+  LIMIT
+  NONNEGOTIABLE
+  LEAK
+  HARD_RULE
+}
+
+model Category {
+  id             String  @id @default(cuid())
+  userId         String
+  user           User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name           String
+  slug           String
+  limitPerPeriod Int? // fils, null = untracked
+  discretionary  Boolean @default(true)
+
+  transactions Transaction[]
+  intents      Intent[]
+  bills        Bill[]
+
+  @@unique([userId, slug])
+}
+
+model Transaction {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  categoryId  String?
+  category    Category? @relation(fields: [categoryId], references: [id])
+  amount      Int // fils, positive = money out
+  merchantRaw String
+  merchant    String // normalized
+  occurredAt  DateTime
+  source      TxSource
+  reference   String // bank ref, receipt no, or generated
+  sourceText  String? // raw SMS the row was parsed from
+  confidence  Float? // parser confidence 0-1
+  corrected   Boolean   @default(false)
+  intentId    String?   @unique
+  intent      Intent?   @relation(fields: [intentId], references: [id])
+  review      Review?
+  batchId     String?
+  batch       ImportBatch? @relation(fields: [batchId], references: [id])
+
+  @@unique([userId, source, reference, occurredAt])
+  @@index([userId, occurredAt])
+}
+
+enum TxSource {
+  SMS
+  CSV
+  MANUAL
+  INTENT
+}
+
+model Intent {
+  id           String      @id @default(cuid())
+  userId       String
+  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  categoryId   String
+  category     Category    @relation(fields: [categoryId], references: [id])
+  amount       Int
+  note         String?
+  decision     Decision
+  ruleRef      String? // Rule.ref the verdict cited
+  reasoning    String
+  affordable   Boolean
+  state        IntentState @default(OPEN)
+  holdUntil    DateTime?
+  resolvedAt   DateTime?
+  createdAt    DateTime    @default(now())
+  transaction  Transaction?
+  latencyMs    Int?
+  inputTokens  Int?
+  outputTokens Int?
+
+  @@index([userId, state])
+}
+
+enum Decision {
+  ALLOW
+  HOLD
+  DECLINE
+}
+
+enum IntentState {
+  OPEN
+  HELD
+  PURCHASED
+  RELEASED
+  EXPIRED
+}
+
+model Bill {
+  id         String    @id @default(cuid())
+  userId     String
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  categoryId String?
+  category   Category? @relation(fields: [categoryId], references: [id])
+  label      String
+  amount     Int
+  dueDay     Int // day of month
+  active     Boolean   @default(true)
+  detected   Boolean   @default(false) // found by the nightly sweep
+
+  @@unique([userId, label])
+}
+
+model Review {
+  id            String      @id @default(cuid())
+  transactionId String      @unique
+  transaction   Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  worthIt       Boolean?
+  askedAt       DateTime    @default(now())
+  answeredAt    DateTime?
+}
+
+model ImportBatch {
+  id        String     @id @default(cuid())
+  userId    String
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  total     Int
+  processed Int        @default(0)
+  failed    Int        @default(0)
+  state     BatchState @default(QUEUED)
+  error     String?
+  createdAt DateTime   @default(now())
+
+  transactions Transaction[]
+  rows         ImportRow[]
+}
+
+enum BatchState {
+  QUEUED
+  RUNNING
+  DONE
+  FAILED
+}
+
+/// One row per input message, so /import can render per-message state while the
+/// background function is still working and so a retried chunk overwrites rather
+/// than appends. Not in the original spec's model list; added because
+/// GET /api/import/[batchId] is specified to return `rows`.
+model ImportRow {
+  id         String      @id @default(cuid())
+  batchId    String
+  batch      ImportBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  index      Int
+  sourceText String
+  state      RowState    @default(PENDING)
+  merchant   String?
+  amount     Int?
+  error      String?
+
+  @@unique([batchId, index])
+}
+
+enum RowState {
+  PENDING
+  PARSED
+  SKIPPED
+  FAILED
+}
+
+/// A correction pair captured when the user edits a parsed row. Fed back into the
+/// next parse call as few-shot examples (§7.3).
+model Correction {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sourceText String
+  corrected  Json // the corrected field values
+  createdAt  DateTime @default(now())
+
+  @@index([userId, createdAt])
+}
+
+model UsageCounter {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  day    String // YYYY-MM-DD in APP_TIMEZONE
+  kind   String // "verdict" | "parse"
+  count  Int    @default(0)
+
+  @@unique([userId, day, kind])
+}

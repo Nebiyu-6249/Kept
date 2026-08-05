@@ -1,0 +1,223 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   KEPT design tokens.
+
+   Rules that hold everywhere, enforced here rather than per-component:
+   - border-radius is 0. There is no radius scale.
+   - The accent is type, a 1px rule, a marker dot, the spine, or an active
+     state. It is never a filled area, never a background, never a button fill.
+   - No gradient, no glow, no shadow.
+   - The spacing scale has nine steps and nothing between them.
+--------------------------------------------------------------------------- */
+
+@theme {
+  --color-ground: #e8e6df;
+  --color-ground-2: #dedbd2;
+  --color-ink: #151515;
+  --color-ink-2: #494844;
+  --color-muted: #75736c;
+  --color-accent: #c4442c;
+  --color-hairline: rgba(21, 21, 21, 0.16);
+
+  --radius-none: 0;
+
+  /* Spacing scale: 4 / 8 / 12 / 16 / 24 / 34 / 56 / 88 / 144. Nothing between. */
+  --spacing-1: 4px;
+  --spacing-2: 8px;
+  --spacing-3: 12px;
+  --spacing-4: 16px;
+  --spacing-5: 24px;
+  --spacing-6: 34px;
+  --spacing-7: 56px;
+  --spacing-8: 88px;
+  --spacing-9: 144px;
+
+  --font-display: var(--font-familjen), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-spline), ui-monospace, "SFMono-Regular", monospace;
+
+  /* Frame metrics, referenced by both the frame components and page padding. */
+  --frame-rail: 34px;
+  --frame-topbar: 58px;
+  --frame-spine: 2px;
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    border-radius: 0;
+  }
+
+  html {
+    background: var(--color-ground);
+    color: var(--color-ink);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background: var(--color-ground);
+    color: var(--color-ink);
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    line-height: 1.75;
+    letter-spacing: 0.12em;
+    margin: 0;
+    min-height: 100dvh;
+  }
+
+  /* Every interactive element gets the same visible focus treatment. Nothing
+     sets `outline: none` without this replacement. */
+  :where(a, button, input, textarea, select, [tabindex]):focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    margin: 0;
+  }
+
+  input,
+  textarea,
+  button,
+  select {
+    font: inherit;
+    letter-spacing: inherit;
+    color: inherit;
+    background: transparent;
+  }
+
+  ::selection {
+    background: var(--color-accent);
+    color: var(--color-ground);
+  }
+}
+
+@layer components {
+  /* --- Type roles (§9.2). Sizes are clamped; tracking and case are fixed. --- */
+
+  .t-display-xl {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(38px, 6.4vw, 104px);
+    letter-spacing: -0.035em;
+    line-height: 0.92;
+    text-transform: uppercase;
+  }
+
+  .t-display-l {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(28px, 3.4vw, 52px);
+    letter-spacing: -0.03em;
+    line-height: 0.98;
+    text-transform: uppercase;
+  }
+
+  .t-display-m {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(32px, 4vw, 64px);
+    letter-spacing: -0.03em;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .t-label {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  .t-value {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: 11.5px;
+    letter-spacing: 0.12em;
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
+
+  .t-body {
+    font-family: var(--font-mono);
+    font-weight: 400;
+    font-size: 11.5px;
+    line-height: 1.75;
+    letter-spacing: 0.12em;
+  }
+
+  /* Every figure in the app is tabular. Applied by <Figure> and .t-value, and
+     available directly for one-off numerals. */
+  .tnum {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
+
+  /* The typographic signature: at least one word of every major headline is an
+     outline sitting beside solid words on the same line (§9.3). */
+  .t-outline {
+    color: transparent;
+    -webkit-text-stroke: 1px currentColor;
+    paint-order: stroke fill;
+  }
+
+  .t-outline-hairline {
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(21, 21, 21, 0.1);
+    paint-order: stroke fill;
+  }
+
+  .hairline {
+    border-color: var(--color-hairline);
+  }
+}
+
+@layer utilities {
+  /* Reveal (§12.4). The start state is applied by a class that script adds only
+     after confirming reduced motion is not requested, so the reduced-motion and
+     no-JS renders are the finished app rather than a blank page. */
+  .js-reveal .reveal-init {
+    opacity: 0;
+    transform: translateY(26px);
+    filter: blur(9px);
+  }
+
+  .reveal-in {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    transition:
+      opacity 800ms cubic-bezier(0.22, 1, 0.36, 1),
+      transform 800ms cubic-bezier(0.22, 1, 0.36, 1),
+      filter 800ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Belt and braces: even if the reveal class were somehow added, nothing stays
+     hidden under reduced motion. */
+  .reveal-init {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+}

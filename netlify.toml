@@ -1,0 +1,22 @@
+[build]
+  command = "prisma generate && prisma migrate deploy && next build"
+  publish = ".next"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+[functions]
+  node_bundler = "esbuild"
+
+# The nightly sweep is capped at 30s by the platform. Anything that does not fit
+# in that window is enqueued to the background function instead of run inline.
+[functions."nightly-sweep"]
+  schedule = "0 20 * * *"
+
+# Prisma's query engine binary is not traced by esbuild; include it explicitly so
+# the bundled functions can reach the database.
+[functions."import-background"]
+  included_files = ["node_modules/.prisma/client/**"]
+
+[functions."nightly-sweep"]
+  included_files = ["node_modules/.prisma/client/**"]

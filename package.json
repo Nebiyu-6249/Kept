@@ -1,0 +1,54 @@
+{
+  "name": "kept",
+  "version": "1.0.0",
+  "private": true,
+  "description": "KEPT — a personal spending advisor. Asks one question before a purchase, enforces a wait when the answer is not yet, and counts the money that was never spent.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "prisma generate && next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "eval": "tsx evals/run.ts",
+    "eval:verdict": "tsx evals/run.ts --suite=verdict",
+    "eval:parse": "tsx evals/run.ts --suite=parse",
+    "eval:validate": "tsx evals/run.ts --validate-only",
+    "e2e": "playwright test",
+    "db:migrate": "prisma migrate dev",
+    "db:deploy": "prisma migrate deploy",
+    "db:seed": "tsx prisma/seed.ts",
+    "db:reset": "prisma migrate reset --force",
+    "check:no-secrets": "tsx scripts/check-no-secrets.ts"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "0.115.0",
+    "@prisma/client": "6.19.3",
+    "framer-motion": "12.43.0",
+    "next": "15.5.22",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@netlify/functions": "5.3.0",
+    "@netlify/plugin-nextjs": "5.15.13",
+    "@playwright/test": "1.62.1",
+    "@types/node": "22.19.0",
+    "@types/react": "19.2.7",
+    "@types/react-dom": "19.2.4",
+    "@tailwindcss/postcss": "4.3.3",
+    "prisma": "6.19.3",
+    "tailwindcss": "4.3.3",
+    "tsx": "4.23.7",
+    "typescript": "5.9.3",
+    "vitest": "4.1.10"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
