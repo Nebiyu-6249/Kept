@@ -1,0 +1,111 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+env:
+  APP_TIMEZONE: Asia/Dubai
+  DEFAULT_CURRENCY: AED
+  VERDICT_DAILY_LIMIT: "100"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: kept
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/kept?schema=public
+      DIRECT_URL: postgresql://postgres:postgres@localhost:5432/kept?schema=public
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Generate Prisma client and apply migrations
+        run: npx prisma generate && npx prisma migrate deploy
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Unit and integration tests
+        run: npm test
+
+      - name: Seed
+        run: npm run db:seed
+
+      - name: Build
+        run: npm run build
+
+      # §17: the API key must never reach a client bundle. This runs against the
+      # real build output, with the real environment loaded.
+      - name: Check no secrets in the client bundle
+        run: npm run check:no-secrets
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: End-to-end smoke tests
+        run: npm run e2e
+
+  # §14: the eval suites gate any change to the prompts. They call the live
+  # model, so they need a key; fixture integrity is checked either way.
+  eval:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Detect changes to the AI layer
+        id: ai
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            base="${{ github.event.pull_request.base.sha }}"
+          else
+            base="${{ github.event.before }}"
+          fi
+          if [ -z "$base" ] || [ "$base" = "0000000000000000000000000000000000000000" ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          elif git diff --name-only "$base" "${{ github.sha }}" | grep -qE '^(src/lib/ai/|evals/)'; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      # Always cheap, always runs: a fixture whose arithmetic does not add up
+      # tests nothing, and catching that costs no tokens.
+      - name: Validate fixtures
+        run: npm run eval:validate
+
+      - name: Run eval suites
+        if: steps.ai.outputs.changed == 'true' && env.ANTHROPIC_API_KEY != ''
+        run: npm run eval
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}

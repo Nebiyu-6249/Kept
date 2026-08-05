@@ -8,6 +8,9 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   serverExternalPackages: ["@prisma/client", "@anthropic-ai/sdk"],
+  // Playwright drives the dev server over 127.0.0.1; without this Next warns on
+  // every asset request. Dev only — it has no effect on a production build.
+  allowedDevOrigins: ["127.0.0.1", "localhost"],
 };
 
 export default nextConfig;
