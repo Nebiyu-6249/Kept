@@ -1,0 +1,237 @@
+[
+  {
+    "id": "a01",
+    "why": "English, balance present, date present",
+    "input": {
+      "message": "Your Card ending 4417 was used for AED 245.50 at CARREF 4471 DUBAI AE on 12/07/2026 14:32. Avl Bal AED 8,412.10"
+    },
+    "expect": {
+      "is_transaction": true,
+      "amount_fils": 24550,
+      "merchant": "Carrefour"
+    }
+  },
+  {
+    "id": "a02",
+    "why": "English, no balance, reference present",
+    "input": {
+      "message": "Purchase of AED 62.00 at TALABAT.COM on 14-07-2026. Ref 88213A"
+    },
+    "expect": {
+      "is_transaction": true,
+      "amount_fils": 6200,
+      "merchant": "Talabat"
+    }
+  },
+  {
+    "id": "a03",
+    "why": "English, no balance, no date, caller supplies fallback date",
+    "input": {
+      "message": "AED 18.00 spent at CAREEM NETWORKS FZ LLC"
+    },
+    "expect": {
+      "is_transaction": true,
+      "amount_fils": 1800,
+      "merchant": "Careem"
+    }
+  },
+  {
+    "id": "a04",
+    "why": "Arabic-English mixed, debit",
+    "input": {
+      "message": "تم خصم AED 340.00 من بطاقتك في LULU HYPERMARKET SILICON OASIS بتاريخ 16/07/2026"
+    },
+    "expect": {
+      "is_transaction": true,
+      "amount_fils": 34000,
+      "merchant": "Lulu"
+    }
+  },
+  {
+    "id": "a05",
+    "why": "Truncated merchant, thousands separator",
+    "input": {
+      "message": "Card purchase AED 1,240.00 MAF CARREFOUR MALL OF THE EM"
+    },
+    "expect": {
+      "is_transaction": true,
+      "amount_fils": 124000,
+      "merchant": "Carrefour"
+    }
+  },
+  {
+    "id": "a06",
+    "why": "CREDIT — must be skipped, is_transaction false",
+    "input": {
+      "message": "Salary credit of AED 18,000.00 has been credited to your account XXXX2201. Avl Bal AED 26,412.10"
+    },
+    "expect": {
+      "is_transaction": false,
+      "amount_fils": null
+    }
+  },
+  {
+    "id": "a07",
+    "why": "OTP — must be skipped, is_transaction false",
+    "input": {
+      "message": "123456 is your One Time Password. Do not share it with anyone. Valid for 5 minutes."
+    },
+    "expect": {
+      "is_transaction": false,
+      "amount_fils": null
+    }
+  },
+  {
+    "id": "a08",
+    "why": "REFUND — money in, must be skipped as an outgoing payment",
+    "input": {
+      "message": "Refund of AED 129.00 from NOON.COM has been processed to your card ending 4417"
+    },
+    "expect": {
+      "is_transaction": false,
+      "amount_fils": null
+    }
+  },
+  {
+    "id": "a09",
+    "why": "Unreadable/absent amount — is_transaction true, amount null, confidence below 0.3",
+    "input": {
+      "message": "Transaction declined. Amount could not be authorised at SHARAF DG ELECTRONICS. Please contact your bank."
+    },
+    "expect": {
+      "is_transaction": true,
+      "amount_fils": null,
+      "max_confidence": 0.3
+    }
+  },
+  {
+    "id": "a10",
+    "why": "Processor prefix, place suffix",
+    "input": {
+      "message": "POS PURCHASE AED 89.75 UNION COOP AL BARSHA DUBAI AE 19/07/2026 19:04"
+    },
+    "expect": {
+      "is_transaction": true,
+      "amount_fils": 8975,
+      "merchant": "Union Coop"
+    }
+  },
+  {
+    "id": "a11",
+    "why": "Fuel, store number in merchant",
+    "input": {
+      "message": "AED 55.00 debited for ADNOC DISTRIBUTION 0092 on 21/07/2026. Available balance AED 7,980.35"
+    },
+    "expect": {
+      "is_transaction": true,
+      "amount_fils": 5500,
+      "merchant": "Adnoc"
+    }
+  },
+  {
+    "id": "a12",
+    "why": "BALANCE ENQUIRY — must be skipped",
+    "input": {
+      "message": "Your balance enquiry: Avl Bal AED 7,980.35 as of 21/07/2026 20:11"
+    },
+    "expect": {
+      "is_transaction": false,
+      "amount_fils": null
+    }
+  },
+  {
+    "id": "a13",
+    "why": "Ecommerce prefix, two-digit year",
+    "input": {
+      "message": "ECOM AED 420.00 NOON COM FZ LLC DUBAI on 23/07/26"
+    },
+    "expect": {
+      "is_transaction": true,
+      "amount_fils": 42000,
+      "merchant": "Noon"
+    }
+  },
+  {
+    "id": "a14",
+    "why": "Rent-style transfer, outgoing",
+    "input": {
+      "message": "Payment of AED 700.00 to LANDLORD TRANSFER completed on 01/08/2026"
+    },
+    "expect": {
+      "is_transaction": true,
+      "amount_fils": 70000,
+      "merchant": "Landlord Transfer"
+    }
+  },
+  {
+    "id": "a15",
+    "why": "Compact format, abbreviated balance label",
+    "input": {
+      "message": "AED 32.50 at KARAK HOUSE JLT. Bal: 7,545.85"
+    },
+    "expect": {
+      "is_transaction": true,
+      "amount_fils": 3250,
+      "merchant": "Karak House"
+    }
+  },
+  {
+    "id": "a16",
+    "why": "Arabic wrapper, Latin merchant",
+    "input": {
+      "message": "مشتريات بقيمة AED 76.25 لدى SHAWARMA STATION في 27/07/2026"
+    },
+    "expect": {
+      "is_transaction": true,
+      "amount_fils": 7625,
+      "merchant": "Shawarma Station"
+    }
+  },
+  {
+    "id": "a17",
+    "why": "Bill payment, reference present, no date",
+    "input": {
+      "message": "Dear Customer, AED 240.00 was charged by TELECOM POSTPAID BILL. Ref: TP-99120"
+    },
+    "expect": {
+      "is_transaction": true,
+      "amount_fils": 24000,
+      "merchant": "Telecom Postpaid"
+    }
+  },
+  {
+    "id": "a18",
+    "why": "PROMOTION — must be skipped",
+    "input": {
+      "message": "Get 20% off your next order at any partner restaurant. Reply STOP to opt out."
+    },
+    "expect": {
+      "is_transaction": false,
+      "amount_fils": null
+    }
+  },
+  {
+    "id": "a19",
+    "why": "Transport top-up, place suffix",
+    "input": {
+      "message": "AED 15.00 NOL TOP UP RTA DUBAI 29/07/2026 08:12 Avl Bal AED 7,290.60"
+    },
+    "expect": {
+      "is_transaction": true,
+      "amount_fils": 1500,
+      "merchant": "Nol Top Up"
+    }
+  },
+  {
+    "id": "a20",
+    "why": "Large discretionary purchase, reference present",
+    "input": {
+      "message": "Card 4417 AED 1,499.00 SHARAF DG DUBAI FESTIVAL CITY 30/07/2026 Ref 5512QQ"
+    },
+    "expect": {
+      "is_transaction": true,
+      "amount_fils": 149900,
+      "merchant": "Sharaf DG"
+    }
+  }
+]

@@ -1,0 +1,3149 @@
+[
+  {
+    "id": "allow-groceries-small",
+    "why": "Well inside the limit, a non-negotiable category, good history.",
+    "input": {
+      "request": {
+        "amount_fils": 6500,
+        "category": "groceries",
+        "note": "weekly shop"
+      },
+      "budget_state": {
+        "period": {
+          "start": "2026-08-01T00:00:00.000Z",
+          "end": "2026-08-31T23:59:59.999Z",
+          "daysRemaining": 11,
+          "daysTotal": 31
+        },
+        "income": 1800000,
+        "committedBills": 97000,
+        "spentTotal": 893000,
+        "spentByCategory": {
+          "groceries": {
+            "spent": 30000,
+            "limit": 150000,
+            "remaining": 120000
+          },
+          "dining": {
+            "spent": 40000,
+            "limit": 140000,
+            "remaining": 100000
+          },
+          "food-delivery": {
+            "spent": 40000,
+            "limit": 60000,
+            "remaining": 20000
+          },
+          "transport": {
+            "spent": 20000,
+            "limit": 80000,
+            "remaining": 60000
+          },
+          "clothing": {
+            "spent": 25000,
+            "limit": 70000,
+            "remaining": 45000
+          },
+          "household": {
+            "spent": 10000,
+            "limit": 50000,
+            "remaining": 40000
+          },
+          "subscriptions": {
+            "spent": 28000,
+            "limit": 30000,
+            "remaining": 2000
+          }
+        },
+        "heldTotal": 0,
+        "kept": 0,
+        "dailyBurn": 44650,
+        "projectedEndSpend": 1384150,
+        "safeToSpend": 810000
+      },
+      "category_history": {
+        "purchases_last_90d": 26,
+        "reviewed": 12,
+        "not_worth_it": 0,
+        "median_amount_fils": 6200
+      },
+      "rules": [
+        {
+          "ref": "R-01",
+          "kind": "HARD_RULE",
+          "text": "Nothing over 200 without a 48 hour wait"
+        },
+        {
+          "ref": "R-02",
+          "kind": "HARD_RULE",
+          "text": "No food delivery on a weekday"
+        },
+        {
+          "ref": "R-04",
+          "kind": "LIMIT",
+          "text": "Dining stays under 1,400 a period"
+        },
+        {
+          "ref": "R-05",
+          "kind": "LIMIT",
+          "text": "Clothing stays under 700 a period"
+        },
+        {
+          "ref": "R-06",
+          "kind": "NONNEGOTIABLE",
+          "text": "Rent and utilities come out first, always"
+        },
+        {
+          "ref": "R-07",
+          "kind": "NONNEGOTIABLE",
+          "text": "Groceries are never a thing to cut"
+        },
+        {
+          "ref": "R-08",
+          "kind": "LEAK",
+          "text": "Food delivery is my leak; I order it when I am tired, not hungry"
+        }
+      ]
+    },
+    "expect": {
+      "decision": "allow"
+    }
+  },
+  {
+    "id": "allow-transport-commute",
+    "why": "Small, inside the limit, and the history says these are worth it.",
+    "input": {
+      "request": {
+        "amount_fils": 3200,
+        "category": "transport",
+        "note": "ride to work"
+      },
+      "budget_state": {
+        "period": {
+          "start": "2026-08-01T00:00:00.000Z",
+          "end": "2026-08-31T23:59:59.999Z",
+          "daysRemaining": 11,
+          "daysTotal": 31
+        },
+        "income": 1800000,
+        "committedBills": 97000,
+        "spentTotal": 893000,
+        "spentByCategory": {
+          "groceries": {
+            "spent": 30000,
+            "limit": 150000,
+            "remaining": 120000
+          },
+          "dining": {
+            "spent": 40000,
+            "limit": 140000,
+            "remaining": 100000
+          },
+          "food-delivery": {
+            "spent": 40000,
+            "limit": 60000,
+            "remaining": 20000
+          },
+          "transport": {
+            "spent": 20000,
+            "limit": 80000,
+            "remaining": 60000
+          },
+          "clothing": {
+            "spent": 25000,
+            "limit": 70000,
+            "remaining": 45000
+          },
+          "household": {
+            "spent": 10000,
+            "limit": 50000,
+            "remaining": 40000
+          },
+          "subscriptions": {
+            "spent": 28000,
+            "limit": 30000,
+            "remaining": 2000
+          }
+        },
+        "heldTotal": 0,
+        "kept": 0,
+        "dailyBurn": 44650,
+        "projectedEndSpend": 1384150,
+        "safeToSpend": 810000
+      },
+      "category_history": {
+        "purchases_last_90d": 20,
+        "reviewed": 9,
+        "not_worth_it": 1,
+        "median_amount_fils": 6200
+      },
+      "rules": [
+        {
+          "ref": "R-01",
+          "kind": "HARD_RULE",
+          "text": "Nothing over 200 without a 48 hour wait"
+        },
+        {
+          "ref": "R-02",
+          "kind": "HARD_RULE",
+          "text": "No food delivery on a weekday"
+        },
+        {
+          "ref": "R-04",
+          "kind": "LIMIT",
+          "text": "Dining stays under 1,400 a period"
+        },
+        {
+          "ref": "R-05",
+          "kind": "LIMIT",
+          "text": "Clothing stays under 700 a period"
+        },
+        {
+          "ref": "R-06",
+          "kind": "NONNEGOTIABLE",
+          "text": "Rent and utilities come out first, always"
+        },
+        {
+          "ref": "R-07",
+          "kind": "NONNEGOTIABLE",
+          "text": "Groceries are never a thing to cut"
+        },
+        {
+          "ref": "R-08",
+          "kind": "LEAK",
+          "text": "Food delivery is my leak; I order it when I am tired, not hungry"
+        }
+      ]
+    },
+    "expect": {
+      "decision": "allow"
+    }
+  },
+  {
+    "id": "allow-groceries-bigger-shop",
+    "why": "120,000 of headroom against a 12,000 request.",
+    "input": {
+      "request": {
+        "amount_fils": 12000,
+        "category": "groceries",
+        "note": "month stock up"
+      },
+      "budget_state": {
+        "period": {
+          "start": "2026-08-01T00:00:00.000Z",
+          "end": "2026-08-31T23:59:59.999Z",
+          "daysRemaining": 11,
+          "daysTotal": 31
+        },
+        "income": 1800000,
+        "committedBills": 97000,
+        "spentTotal": 793000,
+        "spentByCategory": {
+          "groceries": {
+            "spent": 30000,
+            "limit": 150000,
+            "remaining": 120000
+          },
+          "dining": {
+            "spent": 40000,
+            "limit": 140000,
+            "remaining": 100000
+          },
+          "food-delivery": {
+            "spent": 40000,
+            "limit": 60000,
+            "remaining": 20000
+          },
+          "transport": {
+            "spent": 20000,
+            "limit": 80000,
+            "remaining": 60000
+          },
+          "clothing": {
+            "spent": 25000,
+            "limit": 70000,
+            "remaining": 45000
+          },
+          "household": {
+            "spent": 10000,
+            "limit": 50000,
+            "remaining": 40000
+          },
+          "subscriptions": {
+            "spent": 28000,
+            "limit": 30000,
+            "remaining": 2000
+          }
+        },
+        "heldTotal": 0,
+        "kept": 0,
+        "dailyBurn": 39650,
+        "projectedEndSpend": 1229150,
+        "safeToSpend": 910000
+      },
+      "category_history": {
+        "purchases_last_90d": 26,
+        "reviewed": 14,
+        "not_worth_it": 1,
+        "median_amount_fils": 6200
+      },
+      "rules": [
+        {
+          "ref": "R-01",
+          "kind": "HARD_RULE",
+          "text": "Nothing over 200 without a 48 hour wait"
+        },
+        {
+          "ref": "R-02",
+          "kind": "HARD_RULE",
+          "text": "No food delivery on a weekday"
+        },
+        {
+          "ref": "R-04",
+          "kind": "LIMIT",
+          "text": "Dining stays under 1,400 a period"
+        },
+        {
+          "ref": "R-05",
+          "kind": "LIMIT",
+          "text": "Clothing stays under 700 a period"
+        },
+        {
+          "ref": "R-06",
+          "kind": "NONNEGOTIABLE",
+          "text": "Rent and utilities come out first, always"
+        },
+        {
+          "ref": "R-07",
+          "kind": "NONNEGOTIABLE",
+          "text": "Groceries are never a thing to cut"
+        },
+        {
+          "ref": "R-08",
+          "kind": "LEAK",
+          "text": "Food delivery is my leak; I order it when I am tired, not hungry"
+        }
+      ]
+    },
+    "expect": {
+      "decision": "allow"
+    }
+  },
+  {
+    "id": "allow-household-replacement",
+    "why": "40,000 remaining, 8,000 request, nothing marked not worth it.",
+    "input": {
+      "request": {
+        "amount_fils": 8000,
+        "category": "household",
+        "note": "kettle"
+      },
+      "budget_state": {
+        "period": {
+          "start": "2026-08-01T00:00:00.000Z",
+          "end": "2026-08-31T23:59:59.999Z",
+          "daysRemaining": 11,
+          "daysTotal": 31
+        },
+        "income": 1800000,
+        "committedBills": 97000,
+        "spentTotal": 793000,
+        "spentByCategory": {
+          "groceries": {
+            "spent": 30000,
+            "limit": 150000,
+            "remaining": 120000
+          },
+          "dining": {
+            "spent": 40000,
+            "limit": 140000,
+            "remaining": 100000
+          },
+          "food-delivery": {
+            "spent": 40000,
+            "limit": 60000,
+            "remaining": 20000
+          },
+          "transport": {
+            "spent": 20000,
+            "limit": 80000,
+            "remaining": 60000
+          },
+          "clothing": {
+            "spent": 25000,
+            "limit": 70000,
+            "remaining": 45000
+          },
+          "household": {
+            "spent": 10000,
+            "limit": 50000,
+            "remaining": 40000
+          },
+          "subscriptions": {
+            "spent": 28000,
+            "limit": 30000,
+            "remaining": 2000
+          }
+        },
+        "heldTotal": 0,
+        "kept": 0,
+        "dailyBurn": 39650,
+        "projectedEndSpend": 1229150,
+        "safeToSpend": 910000
+      },
+      "category_history": {
+        "purchases_last_90d": 8,
+        "reviewed": 3,
+        "not_worth_it": 0,
+        "median_amount_fils": 6200
+      },
+      "rules": [
+        {
+          "ref": "R-01",
+          "kind": "HARD_RULE",
+          "text": "Nothing over 200 without a 48 hour wait"
+        },
+        {
+          "ref": "R-02",
+          "kind": "HARD_RULE",
+          "text": "No food delivery on a weekday"
+        },
+        {
+          "ref": "R-04",
+          "kind": "LIMIT",
+          "text": "Dining stays under 1,400 a period"
+        },
+        {
+          "ref": "R-05",
+          "kind": "LIMIT",
+          "text": "Clothing stays under 700 a period"
+        },
+        {
+          "ref": "R-06",
+          "kind": "NONNEGOTIABLE",
+          "text": "Rent and utilities come out first, always"
+        },
+        {
+          "ref": "R-07",
+          "kind": "NONNEGOTIABLE",
+          "text": "Groceries are never a thing to cut"
+        },
+        {
+          "ref": "R-08",
+          "kind": "LEAK",
+          "text": "Food delivery is my leak; I order it when I am tired, not hungry"
+        }
+      ]
+    },
+    "expect": {
+      "decision": "allow"
+    }
+  },
+  {
+    "id": "allow-dining-modest",
+    "why": "100,000 left in dining, a 4,500 request, history mostly positive.",
+    "input": {
+      "request": {
+        "amount_fils": 4500,
+        "category": "dining",
+        "note": "lunch"
+      },
+      "budget_state": {
+        "period": {
+          "start": "2026-08-01T00:00:00.000Z",
+          "end": "2026-08-31T23:59:59.999Z",
+          "daysRemaining": 11,
+          "daysTotal": 31
+        },
+        "income": 1800000,
+        "committedBills": 97000,
+        "spentTotal": 793000,
+        "spentByCategory": {
+          "groceries": {
+            "spent": 30000,
+            "limit": 150000,
+            "remaining": 120000
+          },
+          "dining": {
+            "spent": 40000,
+            "limit": 140000,
+            "remaining": 100000
+          },
+          "food-delivery": {
+            "spent": 40000,
+            "limit": 60000,
+            "remaining": 20000
+          },
+          "transport": {
+            "spent": 20000,
+            "limit": 80000,
+            "remaining": 60000
+          },
+          "clothing": {
+            "spent": 25000,
+            "limit": 70000,
+            "remaining": 45000
+          },
+          "household": {
+            "spent": 10000,
+            "limit": 50000,
+            "remaining": 40000
+          },
+          "subscriptions": {
+            "spent": 28000,
+            "limit": 30000,
+            "remaining": 2000
+          }
+        },
+        "heldTotal": 0,
+        "kept": 0,
+        "dailyBurn": 39650,
+        "projectedEndSpend": 1229150,
+        "safeToSpend": 910000
+      },
+      "category_history": {
+        "purchases_last_90d": 22,
+        "reviewed": 6,
+        "not_worth_it": 1,
+        "median_amount_fils": 6200
+      },
+      "rules": [
+        {
+          "ref": "R-01",
+          "kind": "HARD_RULE",
+          "text": "Nothing over 200 without a 48 hour wait"
+        },
+        {
+          "ref": "R-02",
+          "kind": "HARD_RULE",
+          "text": "No food delivery on a weekday"
+        },
+        {
+          "ref": "R-04",
+          "kind": "LIMIT",
+          "text": "Dining stays under 1,400 a period"
+        },
+        {
+          "ref": "R-05",
+          "kind": "LIMIT",
+          "text": "Clothing stays under 700 a period"
+        },
+        {
+          "ref": "R-06",
+          "kind": "NONNEGOTIABLE",
+          "text": "Rent and utilities come out first, always"
+        },
+        {
+          "ref": "R-07",
+          "kind": "NONNEGOTIABLE",
+          "text": "Groceries are never a thing to cut"
+        },
+        {
+          "ref": "R-08",
+          "kind": "LEAK",
+          "text": "Food delivery is my leak; I order it when I am tired, not hungry"
+        }
+      ]
+    },
+    "expect": {
+      "decision": "allow"
+    }
+  },
+  {
+    "id": "allow-untracked-category",
+    "why": "No limit on the category and a large safe-to-spend.",
+    "input": {
+      "request": {
+        "amount_fils": 1500,
+        "category": "transport",
+        "note": "bus fare"
+      },
+      "budget_state": {
+        "period": {
+          "start": "2026-08-01T00:00:00.000Z",
+          "end": "2026-08-31T23:59:59.999Z",
+          "daysRemaining": 11,
+          "daysTotal": 31
+        },
+        "income": 1800000,
+        "committedBills": 97000,
+        "spentTotal": 693000,
+        "spentByCategory": {
+          "groceries": {
+            "spent": 30000,
+            "limit": 150000,
+            "remaining": 120000
+          },
+          "dining": {
+            "spent": 40000,
+            "limit": 140000,
+            "remaining": 100000
+          },
+          "food-delivery": {
+            "spent": 40000,
+            "limit": 60000,
+            "remaining": 20000
+          },
+          "transport": {
+            "spent": 20000,
+            "limit": null,
+            "remaining": null
+          },
+          "clothing": {
+            "spent": 25000,
+            "limit": 70000,
+            "remaining": 45000
+          },
+          "household": {
+            "spent": 10000,
+            "limit": 50000,
+            "remaining": 40000
+          },
+          "subscriptions": {
+            "spent": 28000,
+            "limit": 30000,
+            "remaining": 2000
+          }
+        },
+        "heldTotal": 0,
+        "kept": 0,
+        "dailyBurn": 34650,
+        "projectedEndSpend": 1074150,
+        "safeToSpend": 1010000
+      },
+      "category_history": {
+        "purchases_last_90d": 20,
+        "reviewed": 8,
+        "not_worth_it": 0,
+        "median_amount_fils": 6200
+      },
+      "rules": [
+        {
+          "ref": "R-01",
+          "kind": "HARD_RULE",
+          "text": "Nothing over 200 without a 48 hour wait"
+        },
+        {
+          "ref": "R-02",
+          "kind": "HARD_RULE",
+          "text": "No food delivery on a weekday"
+        },
+        {
+          "ref": "R-04",
+          "kind": "LIMIT",
+          "text": "Dining stays under 1,400 a period"
+        },
+        {
+          "ref": "R-05",
+          "kind": "LIMIT",
+          "text": "Clothing stays under 700 a period"
+        },
+        {
+          "ref": "R-06",
+          "kind": "NONNEGOTIABLE",
+          "text": "Rent and utilities come out first, always"
+        },
+        {
+          "ref": "R-07",
+          "kind": "NONNEGOTIABLE",
+          "text": "Groceries are never a thing to cut"
+        },
+        {
+          "ref": "R-08",
+          "kind": "LEAK",
+          "text": "Food delivery is my leak; I order it when I am tired, not hungry"
+        }
+      ]
+    },
+    "expect": {
+      "decision": "allow"
+    }
+  },
+  {
+    "id": "hold-delivery-leak",
+    "why": "Affordable and inside the limit, but 8 of 11 reviews said not worth it.",
+    "input": {
+      "request": {
+        "amount_fils": 8500,
+        "category": "food-delivery",
+        "note": "Saturday, late dinner"
+      },
+      "budget_state": {
+        "period": {
+          "start": "2026-08-01T00:00:00.000Z",
+          "end": "2026-08-31T23:59:59.999Z",
+          "daysRemaining": 11,
+          "daysTotal": 31
+        },
+        "income": 1800000,
+        "committedBills": 97000,
+        "spentTotal": 793000,
+        "spentByCategory": {
+          "groceries": {
+            "spent": 30000,
+            "limit": 150000,
+            "remaining": 120000
+          },
+          "dining": {
+            "spent": 40000,
+            "limit": 140000,
+            "remaining": 100000
+          },
+          "food-delivery": {
+            "spent": 40000,
+            "limit": 60000,
+            "remaining": 20000
+          },
+          "transport": {
+            "spent": 20000,
+            "limit": 80000,
+            "remaining": 60000
+          },
+          "clothing": {
+            "spent": 25000,
+            "limit": 70000,
+            "remaining": 45000
+          },
+          "household": {
+            "spent": 10000,
+            "limit": 50000,
+            "remaining": 40000
+          },
+          "subscriptions": {
+            "spent": 28000,
+            "limit": 30000,
+            "remaining": 2000
+          }
+        },
+        "heldTotal": 0,
+        "kept": 0,
+        "dailyBurn": 39650,
+        "projectedEndSpend": 1229150,
+        "safeToSpend": 910000
+      },
+      "category_history": {
+        "purchases_last_90d": 14,
+        "reviewed": 11,
+        "not_worth_it": 8,
+        "median_amount_fils": 6200
+      },
+      "rules": [
+        {
+          "ref": "R-01",
+          "kind": "HARD_RULE",
+          "text": "Nothing over 200 without a 48 hour wait"
+        },
+        {
+          "ref": "R-02",
+          "kind": "HARD_RULE",
+          "text": "No food delivery on a weekday"
+        },
+        {
+          "ref": "R-04",
+          "kind": "LIMIT",
+          "text": "Dining stays under 1,400 a period"
+        },
+        {
+          "ref": "R-05",
+          "kind": "LIMIT",
+          "text": "Clothing stays under 700 a period"
+        },
+        {
+          "ref": "R-06",
+          "kind": "NONNEGOTIABLE",
+          "text": "Rent and utilities come out first, always"
+        },
+        {
+          "ref": "R-07",
+          "kind": "NONNEGOTIABLE",
+          "text": "Groceries are never a thing to cut"
+        },
+        {
+          "ref": "R-08",
+          "kind": "LEAK",
+          "text": "Food delivery is my leak; I order it when I am tired, not hungry"
+        }
+      ]
+    },
+    "expect": {
+      "decision": "hold"
+    }
+  },
+  {
+    "id": "hold-dining-over-limit",
+    "why": "Affordable overall but past what dining has left.",
+    "input": {
+      "request": {
+        "amount_fils": 45000,
+        "category": "dining",
+        "note": "team dinner"
+      },
+      "budget_state": {
+        "period": {
+          "start": "2026-08-01T00:00:00.000Z",
+          "end": "2026-08-31T23:59:59.999Z",
+          "daysRemaining": 11,
+          "daysTotal": 31
+        },
+        "income": 1800000,
+        "committedBills": 97000,
+        "spentTotal": 865000,
+        "spentByCategory": {
+          "groceries": {
+            "spent": 30000,
+            "limit": 150000,
+            "remaining": 120000
+          },
+          "dining": {
+            "spent": 112000,
+            "limit": 140000,
+            "remaining": 28000
+          },
+          "food-delivery": {
+            "spent": 40000,
+            "limit": 60000,
+            "remaining": 20000
+          },
+          "transport": {
+            "spent": 20000,
+            "limit": 80000,
+            "remaining": 60000
+          },
+          "clothing": {
+            "spent": 25000,
+            "limit": 70000,
+            "remaining": 45000
+          },
+          "household": {
+            "spent": 10000,
+            "limit": 50000,
+            "remaining": 40000
+          },
+          "subscriptions": {
+            "spent": 28000,
+            "limit": 30000,
+            "remaining": 2000
+          }
+        },
+        "heldTotal": 0,
+        "kept": 0,
+        "dailyBurn": 43250,
+        "projectedEndSpend": 1340750,
+        "safeToSpend": 838000
+      },
+      "category_history": {
+        "purchases_last_90d": 22,
+        "reviewed": 10,
+        "not_worth_it": 4,
+        "median_amount_fils": 6200
+      },
+      "rules": [
+        {
+          "ref": "R-01",
+          "kind": "HARD_RULE",
+          "text": "Nothing over 200 without a 48 hour wait"
+        },
+        {
+          "ref": "R-02",
+          "kind": "HARD_RULE",
+          "text": "No food delivery on a weekday"
+        },
+        {
+          "ref": "R-04",
+          "kind": "LIMIT",
+          "text": "Dining stays under 1,400 a period"
+        },
+        {
+          "ref": "R-05",
+          "kind": "LIMIT",
+          "text": "Clothing stays under 700 a period"
+        },
+        {
+          "ref": "R-06",
+          "kind": "NONNEGOTIABLE",
+          "text": "Rent and utilities come out first, always"
+        },
+        {
+          "ref": "R-07",
+          "kind": "NONNEGOTIABLE",
+          "text": "Groceries are never a thing to cut"
+        },
+        {
+          "ref": "R-08",
+          "kind": "LEAK",
+          "text": "Food delivery is my leak; I order it when I am tired, not hungry"
+        }
+      ]
+    },
+    "expect": {
+      "decision": "hold"
+    }
+  },
+  {
+    "id": "hold-clothing-over-limit",
+    "why": "12,000 left in clothing against an 89,000 request, still affordable overall.",
+    "input": {
+      "request": {
+        "amount_fils": 89000,
+        "category": "clothing",
+        "note": "jacket"
+      },
+      "budget_state": {
+        "period": {
+          "start": "2026-08-01T00:00:00.000Z",
+          "end": "2026-08-31T23:59:59.999Z",
+          "daysRemaining": 11,
+          "daysTotal": 31
+        },
+        "income": 1800000,
+        "committedBills": 97000,
+        "spentTotal": 726000,
+        "spentByCategory": {
+          "groceries": {
+            "spent": 30000,
+            "limit": 150000,
+            "remaining": 120000
+          },
+          "dining": {
+            "spent": 40000,
+            "limit": 140000,
+            "remaining": 100000
+          },
+          "food-delivery": {
+            "spent": 40000,
+            "limit": 60000,
+            "remaining": 20000
+          },
+          "transport": {
+            "spent": 20000,
+            "limit": 80000,
+            "remaining": 60000
+          },
+          "clothing": {
+            "spent": 58000,
+            "limit": 70000,
+            "remaining": 12000
+          },
+          "household": {
+            "spent": 10000,
+            "limit": 50000,
+            "remaining": 40000
+          },
+          "subscriptions": {
+            "spent": 28000,
+            "limit": 30000,
+            "remaining": 2000
+          }
+        },
+        "heldTotal": 0,
+        "kept": 0,
+        "dailyBurn": 36300,
+        "projectedEndSpend": 1125300,
+        "safeToSpend": 977000
+      },
+      "category_history": {
+        "purchases_last_90d": 6,
+        "reviewed": 4,
+        "not_worth_it": 2,
+        "median_amount_fils": 6200
+      },
+      "rules": [
+        {
+          "ref": "R-01",
+          "kind": "HARD_RULE",
+          "text": "Nothing over 200 without a 48 hour wait"
+        },
+        {
+          "ref": "R-02",
+          "kind": "HARD_RULE",
+          "text": "No food delivery on a weekday"
+        },
+        {
+          "ref": "R-04",
+          "kind": "LIMIT",
+          "text": "Dining stays under 1,400 a period"
+        },
+        {
+          "ref": "R-05",
+          "kind": "LIMIT",
+          "text": "Clothing stays under 700 a period"
+        },
+        {
+          "ref": "R-06",
+          "kind": "NONNEGOTIABLE",
+          "text": "Rent and utilities come out first, always"
+        },
+        {
+          "ref": "R-07",
+          "kind": "NONNEGOTIABLE",
+          "text": "Groceries are never a thing to cut"
+        },
+        {
+          "ref": "R-08",
+          "kind": "LEAK",
+          "text": "Food delivery is my leak; I order it when I am tired, not hungry"
+        }
+      ]
+    },
+    "expect": {
+      "decision": "hold"
+    }
+  },
+  {
+    "id": "hold-delivery-just-over",
+    "why": "5,000 left, 6,000 asked. Over the category, well inside the money.",
+    "input": {
+      "request": {
+        "amount_fils": 6000,
+        "category": "food-delivery",
+        "note": "Saturday lunch"
+      },
+      "budget_state": {
+        "period": {
+          "start": "2026-08-01T00:00:00.000Z",
+          "end": "2026-08-31T23:59:59.999Z",
+          "daysRemaining": 11,
+          "daysTotal": 31
+        },
+        "income": 1800000,
+        "committedBills": 97000,
+        "spentTotal": 708000,
+        "spentByCategory": {
+          "groceries": {
+            "spent": 30000,
+            "limit": 150000,
+            "remaining": 120000
+          },
+          "dining": {
+            "spent": 40000,
+            "limit": 140000,
+            "remaining": 100000
+          },
+          "food-delivery": {
+            "spent": 55000,
+            "limit": 60000,
+            "remaining": 5000
+          },
+          "transport": {
+            "spent": 20000,
+            "limit": 80000,
+            "remaining": 60000
+          },
+          "clothing": {
+            "spent": 25000,
+            "limit": 70000,
+            "remaining": 45000
+          },
+          "household": {
+            "spent": 10000,
+            "limit": 50000,
+            "remaining": 40000
+          },
+          "subscriptions": {
+            "spent": 28000,
+            "limit": 30000,
+            "remaining": 2000
+          }
+        },
+        "heldTotal": 0,
+        "kept": 0,
+        "dailyBurn": 35400,
+        "projectedEndSpend": 1097400,
+        "safeToSpend": 995000
+      },
+      "category_history": {
+        "purchases_last_90d": 18,
+        "reviewed": 9,
+        "not_worth_it": 6,
+        "median_amount_fils": 6200
+      },
+      "rules": [
+        {
+          "ref": "R-01",
+          "kind": "HARD_RULE",
+          "text": "Nothing over 200 without a 48 hour wait"
+        },
+        {
+          "ref": "R-02",
+          "kind": "HARD_RULE",
+          "text": "No food delivery on a weekday"
+        },
+        {
+          "ref": "R-04",
+          "kind": "LIMIT",
+          "text": "Dining stays under 1,400 a period"
+        },
+        {
+          "ref": "R-05",
+          "kind": "LIMIT",
+          "text": "Clothing stays under 700 a period"
+        },
+        {
+          "ref": "R-06",
+          "kind": "NONNEGOTIABLE",
+          "text": "Rent and utilities come out first, always"
+        },
+        {
+          "ref": "R-07",
+          "kind": "NONNEGOTIABLE",
+          "text": "Groceries are never a thing to cut"
+        },
+        {
+          "ref": "R-08",
+          "kind": "LEAK",
+          "text": "Food delivery is my leak; I order it when I am tired, not hungry"
+        }
+      ]
+    },
+    "expect": {
+      "decision": "hold"
+    }
+  },
+  {
+    "id": "hold-household-over-limit",
+    "why": "15,000 remaining against 35,000 asked.",
+    "input": {
+      "request": {
+        "amount_fils": 35000,
+        "category": "household",
+        "note": "shelving"
+      },
+      "budget_state": {
+        "period": {
+          "start": "2026-08-01T00:00:00.000Z",
+          "end": "2026-08-31T23:59:59.999Z",
+          "daysRemaining": 11,
+          "daysTotal": 31
+        },
+        "income": 1800000,
+        "committedBills": 97000,
+        "spentTotal": 718000,
+        "spentByCategory": {
+          "groceries": {
+            "spent": 30000,
+            "limit": 150000,
+            "remaining": 120000
+          },
+          "dining": {
+            "spent": 40000,
+            "limit": 140000,
+            "remaining": 100000
+          },
+          "food-delivery": {
+            "spent": 40000,
+            "limit": 60000,
+            "remaining": 20000
+          },
+          "transport": {
+            "spent": 20000,
+            "limit": 80000,
+            "remaining": 60000
+          },
+          "clothing": {
+            "spent": 25000,
+            "limit": 70000,
+            "remaining": 45000
+          },
+          "household": {
+            "spent": 35000,
+            "limit": 50000,
+            "remaining": 15000
+          },
+          "subscriptions": {
+            "spent": 28000,
+            "limit": 30000,
+            "remaining": 2000
+          }
+        },
+        "heldTotal": 0,
+        "kept": 0,
+        "dailyBurn": 35900,
+        "projectedEndSpend": 1112900,
+        "safeToSpend": 985000
+      },
+      "category_history": {
+        "purchases_last_90d": 8,
+        "reviewed": 4,
+        "not_worth_it": 2,
+        "median_amount_fils": 6200
+      },
+      "rules": [
+        {
+          "ref": "R-01",
+          "kind": "HARD_RULE",
+          "text": "Nothing over 200 without a 48 hour wait"
+        },
+        {
+          "ref": "R-02",
+          "kind": "HARD_RULE",
+          "text": "No food delivery on a weekday"
+        },
+        {
+          "ref": "R-04",
+          "kind": "LIMIT",
+          "text": "Dining stays under 1,400 a period"
+        },
+        {
+          "ref": "R-05",
+          "kind": "LIMIT",
+          "text": "Clothing stays under 700 a period"
+        },
+        {
+          "ref": "R-06",
+          "kind": "NONNEGOTIABLE",
+          "text": "Rent and utilities come out first, always"
+        },
+        {
+          "ref": "R-07",
+          "kind": "NONNEGOTIABLE",
+          "text": "Groceries are never a thing to cut"
+        },
+        {
+          "ref": "R-08",
+          "kind": "LEAK",
+          "text": "Food delivery is my leak; I order it when I am tired, not hungry"
+        }
+      ]
+    },
+    "expect": {
+      "decision": "hold"
+    }
+  },
+  {
+    "id": "hold-subscription-over-limit",
+    "why": "2,000 left in subscriptions, 4,500 asked, and it is a recurring commitment.",
+    "input": {
+      "request": {
+        "amount_fils": 4500,
+        "category": "subscriptions",
+        "note": "another streaming service"
+      },
+      "budget_state": {
+        "period": {
+          "start": "2026-08-01T00:00:00.000Z",
+          "end": "2026-08-31T23:59:59.999Z",
+          "daysRemaining": 11,
+          "daysTotal": 31
+        },
+        "income": 1800000,
+        "committedBills": 97000,
+        "spentTotal": 693000,
+        "spentByCategory": {
+          "groceries": {
+            "spent": 30000,
+            "limit": 150000,
+            "remaining": 120000
+          },
+          "dining": {
+            "spent": 40000,
+            "limit": 140000,
+            "remaining": 100000
+          },
+          "food-delivery": {
+            "spent": 40000,
+            "limit": 60000,
+            "remaining": 20000
+          },
+          "transport": {
+            "spent": 20000,
+            "limit": 80000,
+            "remaining": 60000
+          },
+          "clothing": {
+            "spent": 25000,
+            "limit": 70000,
+            "remaining": 45000
+          },
+          "household": {
+            "spent": 10000,
+            "limit": 50000,
+            "remaining": 40000
+          },
+          "subscriptions": {
+            "spent": 28000,
+            "limit": 30000,
+            "remaining": 2000
+          }
+        },
+        "heldTotal": 0,
+        "kept": 0,
+        "dailyBurn": 34650,
+        "projectedEndSpend": 1074150,
+        "safeToSpend": 1010000
+      },
+      "category_history": {
+        "purchases_last_90d": 6,
+        "reviewed": 4,
+        "not_worth_it": 3,
+        "median_amount_fils": 6200
+      },
+      "rules": [
+        {
+          "ref": "R-01",
+          "kind": "HARD_RULE",
+          "text": "Nothing over 200 without a 48 hour wait"
+        },
+        {
+          "ref": "R-02",
+          "kind": "HARD_RULE",
+          "text": "No food delivery on a weekday"
+        },
+        {
+          "ref": "R-04",
+          "kind": "LIMIT",
+          "text": "Dining stays under 1,400 a period"
+        },
+        {
+          "ref": "R-05",
+          "kind": "LIMIT",
+          "text": "Clothing stays under 700 a period"
+        },
+        {
+          "ref": "R-06",
+          "kind": "NONNEGOTIABLE",
+          "text": "Rent and utilities come out first, always"
+        },
+        {
+          "ref": "R-07",
+          "kind": "NONNEGOTIABLE",
+          "text": "Groceries are never a thing to cut"
+        },
+        {
+          "ref": "R-08",
+          "kind": "LEAK",
+          "text": "Food delivery is my leak; I order it when I am tired, not hungry"
+        }
+      ]
+    },
+    "expect": {
+      "decision": "hold"
+    }
+  },
+  {
+    "id": "hold-dining-history-against",
+    "why": "Fits the limit comfortably, but 9 of 12 reviews said not worth it.",
+    "input": {
+      "request": {
+        "amount_fils": 22000,
+        "category": "dining",
+        "note": "dinner out"
+      },
+      "budget_state": {
+        "period": {
+          "start": "2026-08-01T00:00:00.000Z",
+          "end": "2026-08-31T23:59:59.999Z",
+          "daysRemaining": 11,
+          "daysTotal": 31
+        },
+        "income": 1800000,
+        "committedBills": 97000,
+        "spentTotal": 693000,
+        "spentByCategory": {
+          "groceries": {
+            "spent": 30000,
+            "limit": 150000,
+            "remaining": 120000
+          },
+          "dining": {
+            "spent": 40000,
+            "limit": 140000,
+            "remaining": 100000
+          },
+          "food-delivery": {
+            "spent": 40000,
+            "limit": 60000,
+            "remaining": 20000
+          },
+          "transport": {
+            "spent": 20000,
+            "limit": 80000,
+            "remaining": 60000
+          },
+          "clothing": {
+            "spent": 25000,
+            "limit": 70000,
+            "remaining": 45000
+          },
+          "household": {
+            "spent": 10000,
+            "limit": 50000,
+            "remaining": 40000
+          },
+          "subscriptions": {
+            "spent": 28000,
+            "limit": 30000,
+            "remaining": 2000
+          }
+        },
+        "heldTotal": 0,
+        "kept": 0,
+        "dailyBurn": 34650,
+        "projectedEndSpend": 1074150,
+        "safeToSpend": 1010000
+      },
+      "category_history": {
+        "purchases_last_90d": 22,
+        "reviewed": 12,
+        "not_worth_it": 9,
+        "median_amount_fils": 6200
+      },
+      "rules": [
+        {
+          "ref": "R-01",
+          "kind": "HARD_RULE",
+          "text": "Nothing over 200 without a 48 hour wait"
+        },
+        {
+          "ref": "R-02",
+          "kind": "HARD_RULE",
+          "text": "No food delivery on a weekday"
+        },
+        {
+          "ref": "R-04",
+          "kind": "LIMIT",
+          "text": "Dining stays under 1,400 a period"
+        },
+        {
+          "ref": "R-05",
+          "kind": "LIMIT",
+          "text": "Clothing stays under 700 a period"
+        },
+        {
+          "ref": "R-06",
+          "kind": "NONNEGOTIABLE",
+          "text": "Rent and utilities come out first, always"
+        },
+        {
+          "ref": "R-07",
+          "kind": "NONNEGOTIABLE",
+          "text": "Groceries are never a thing to cut"
+        },
+        {
+          "ref": "R-08",
+          "kind": "LEAK",
+          "text": "Food delivery is my leak; I order it when I am tired, not hungry"
+        }
+      ]
+    },
+    "expect": {
+      "decision": "hold"
+    }
+  },
+  {
+    "id": "hold-clothing-history-against",
+    "why": "45,000 of room, but 5 of 6 clothing reviews were regrets.",
+    "input": {
+      "request": {
+        "amount_fils": 30000,
+        "category": "clothing",
+        "note": "shoes"
+      },
+      "budget_state": {
+        "period": {
+          "start": "2026-08-01T00:00:00.000Z",
+          "end": "2026-08-31T23:59:59.999Z",
+          "daysRemaining": 11,
+          "daysTotal": 31
+        },
+        "income": 1800000,
+        "committedBills": 97000,
+        "spentTotal": 693000,
+        "spentByCategory": {
+          "groceries": {
+            "spent": 30000,
+            "limit": 150000,
+            "remaining": 120000
+          },
+          "dining": {
+            "spent": 40000,
+            "limit": 140000,
+            "remaining": 100000
+          },
+          "food-delivery": {
+            "spent": 40000,
+            "limit": 60000,
+            "remaining": 20000
+          },
+          "transport": {
+            "spent": 20000,
+            "limit": 80000,
+            "remaining": 60000
+          },
+          "clothing": {
+            "spent": 25000,
+            "limit": 70000,
+            "remaining": 45000
+          },
+          "household": {
+            "spent": 10000,
+            "limit": 50000,
+            "remaining": 40000
+          },
+          "subscriptions": {
+            "spent": 28000,
+            "limit": 30000,
+            "remaining": 2000
+          }
+        },
+        "heldTotal": 0,
+        "kept": 0,
+        "dailyBurn": 34650,
+        "projectedEndSpend": 1074150,
+        "safeToSpend": 1010000
+      },
+      "category_history": {
+        "purchases_last_90d": 6,
+        "reviewed": 6,
+        "not_worth_it": 5,
+        "median_amount_fils": 6200
+      },
+      "rules": [
+        {
+          "ref": "R-01",
+          "kind": "HARD_RULE",
+          "text": "Nothing over 200 without a 48 hour wait"
+        },
+        {
+          "ref": "R-02",
+          "kind": "HARD_RULE",
+          "text": "No food delivery on a weekday"
+        },
+        {
+          "ref": "R-04",
+          "kind": "LIMIT",
+          "text": "Dining stays under 1,400 a period"
+        },
+        {
+          "ref": "R-05",
+          "kind": "LIMIT",
+          "text": "Clothing stays under 700 a period"
+        },
+        {
+          "ref": "R-06",
+          "kind": "NONNEGOTIABLE",
+          "text": "Rent and utilities come out first, always"
+        },
+        {
+          "ref": "R-07",
+          "kind": "NONNEGOTIABLE",
+          "text": "Groceries are never a thing to cut"
+        },
+        {
+          "ref": "R-08",
+          "kind": "LEAK",
+          "text": "Food delivery is my leak; I order it when I am tired, not hungry"
+        }
+      ]
+    },
+    "expect": {
+      "decision": "hold"
+    }
+  },
+  {
+    "id": "decline-clothing-no-money",
+    "why": "40,000 safe to spend against a 250,000 request.",
+    "input": {
+      "request": {
+        "amount_fils": 250000,
+        "category": "clothing",
+        "note": "coat"
+      },
+      "budget_state": {
+        "period": {
+          "start": "2026-08-01T00:00:00.000Z",
+          "end": "2026-08-31T23:59:59.999Z",
+          "daysRemaining": 11,
+          "daysTotal": 31
+        },
+        "income": 1800000,
+        "committedBills": 97000,
+        "spentTotal": 1663000,
+        "spentByCategory": {
+          "groceries": {
+            "spent": 30000,
+            "limit": 150000,
+            "remaining": 120000
+          },
+          "dining": {
+            "spent": 40000,
+            "limit": 140000,
+            "remaining": 100000
+          },
+          "food-delivery": {
+            "spent": 40000,
+            "limit": 60000,
+            "remaining": 20000
+          },
+          "transport": {
+            "spent": 20000,
+            "limit": 80000,
+            "remaining": 60000
+          },
+          "clothing": {
+            "spent": 25000,
+            "limit": 70000,
+            "remaining": 45000
+          },
+          "household": {
+            "spent": 10000,
+            "limit": 50000,
+            "remaining": 40000
+          },
+          "subscriptions": {
+            "spent": 28000,
+            "limit": 30000,
+            "remaining": 2000
+          }
+        },
+        "heldTotal": 0,
+        "kept": 0,
+        "dailyBurn": 83150,
+        "projectedEndSpend": 2577650,
+        "safeToSpend": 40000
+      },
+      "category_history": {
+        "purchases_last_90d": 6,
+        "reviewed": 4,
+        "not_worth_it": 2,
+        "median_amount_fils": 6200
+      },
+      "rules": [
+        {
+          "ref": "R-01",
+          "kind": "HARD_RULE",
+          "text": "Nothing over 200 without a 48 hour wait"
+        },
+        {
+          "ref": "R-02",
+          "kind": "HARD_RULE",
+          "text": "No food delivery on a weekday"
+        },
+        {
+          "ref": "R-04",
+          "kind": "LIMIT",
+          "text": "Dining stays under 1,400 a period"
+        },
+        {
+          "ref": "R-05",
+          "kind": "LIMIT",
+          "text": "Clothing stays under 700 a period"
+        },
+        {
+          "ref": "R-06",
+          "kind": "NONNEGOTIABLE",
+          "text": "Rent and utilities come out first, always"
+        },
+        {
+          "ref": "R-07",
+          "kind": "NONNEGOTIABLE",
+          "text": "Groceries are never a thing to cut"
+        },
+        {
+          "ref": "R-08",
+          "kind": "LEAK",
+          "text": "Food delivery is my leak; I order it when I am tired, not hungry"
+        }
+      ]
+    },
+    "expect": {
+      "decision": "decline"
+    }
+  },
+  {
+    "id": "decline-household-no-money",
+    "why": "12,000 safe to spend against 180,000.",
+    "input": {
+      "request": {
+        "amount_fils": 180000,
+        "category": "household",
+        "note": "sofa"
+      },
+      "budget_state": {
+        "period": {
+          "start": "2026-08-01T00:00:00.000Z",
+          "end": "2026-08-31T23:59:59.999Z",
+          "daysRemaining": 11,
+          "daysTotal": 31
+        },
+        "income": 1800000,
+        "committedBills": 97000,
+        "spentTotal": 1691000,
+        "spentByCategory": {
+          "groceries": {
+            "spent": 30000,
+            "limit": 150000,
+            "remaining": 120000
+          },
+          "dining": {
+            "spent": 40000,
+            "limit": 140000,
+            "remaining": 100000
+          },
+          "food-delivery": {
+            "spent": 40000,
+            "limit": 60000,
+            "remaining": 20000
+          },
+          "transport": {
+            "spent": 20000,
+            "limit": 80000,
+            "remaining": 60000
+          },
+          "clothing": {
+            "spent": 25000,
+            "limit": 70000,
+            "remaining": 45000
+          },
+          "household": {
+            "spent": 10000,
+            "limit": 50000,
+            "remaining": 40000
+          },
+          "subscriptions": {
+            "spent": 28000,
+            "limit": 30000,
+            "remaining": 2000
+          }
+        },
+        "heldTotal": 0,
+        "kept": 0,
+        "dailyBurn": 84550,
+        "projectedEndSpend": 2621050,
+        "safeToSpend": 12000
+      },
+      "category_history": {
+        "purchases_last_90d": 8,
+        "reviewed": 3,
+        "not_worth_it": 1,
+        "median_amount_fils": 6200
+      },
+      "rules": [
+        {
+          "ref": "R-01",
+          "kind": "HARD_RULE",
+          "text": "Nothing over 200 without a 48 hour wait"
+        },
+        {
+          "ref": "R-02",
+          "kind": "HARD_RULE",
+          "text": "No food delivery on a weekday"
+        },
+        {
+          "ref": "R-04",
+          "kind": "LIMIT",
+          "text": "Dining stays under 1,400 a period"
+        },
+        {
+          "ref": "R-05",
+          "kind": "LIMIT",
+          "text": "Clothing stays under 700 a period"
+        },
+        {
+          "ref": "R-06",
+          "kind": "NONNEGOTIABLE",
+          "text": "Rent and utilities come out first, always"
+        },
+        {
+          "ref": "R-07",
+          "kind": "NONNEGOTIABLE",
+          "text": "Groceries are never a thing to cut"
+        },
+        {
+          "ref": "R-08",
+          "kind": "LEAK",
+          "text": "Food delivery is my leak; I order it when I am tired, not hungry"
+        }
+      ]
+    },
+    "expect": {
+      "decision": "decline"
+    }
+  },
+  {
+    "id": "decline-already-overspent",
+    "why": "Safe to spend is already negative before this is added.",
+    "input": {
+      "request": {
+        "amount_fils": 90000,
+        "category": "dining",
+        "note": "birthday"
+      },
+      "budget_state": {
+        "period": {
+          "start": "2026-08-01T00:00:00.000Z",
+          "end": "2026-08-31T23:59:59.999Z",
+          "daysRemaining": 11,
+          "daysTotal": 31
+        },
+        "income": 1800000,
+        "committedBills": 97000,
+        "spentTotal": 1728000,
+        "spentByCategory": {
+          "groceries": {
+            "spent": 30000,
+            "limit": 150000,
+            "remaining": 120000
+          },
+          "dining": {
+            "spent": 40000,
+            "limit": 140000,
+            "remaining": 100000
+          },
+          "food-delivery": {
+            "spent": 40000,
+            "limit": 60000,
+            "remaining": 20000
+          },
+          "transport": {
+            "spent": 20000,
+            "limit": 80000,
+            "remaining": 60000
+          },
+          "clothing": {
+            "spent": 25000,
+            "limit": 70000,
+            "remaining": 45000
+          },
+          "household": {
+            "spent": 10000,
+            "limit": 50000,
+            "remaining": 40000
+          },
+          "subscriptions": {
+            "spent": 28000,
+            "limit": 30000,
+            "remaining": 2000
+          }
+        },
+        "heldTotal": 0,
+        "kept": 0,
+        "dailyBurn": 86400,
+        "projectedEndSpend": 2678400,
+        "safeToSpend": -25000
+      },
+      "category_history": {
+        "purchases_last_90d": 22,
+        "reviewed": 10,
+        "not_worth_it": 5,
+        "median_amount_fils": 6200
+      },
+      "rules": [
+        {
+          "ref": "R-01",
+          "kind": "HARD_RULE",
+          "text": "Nothing over 200 without a 48 hour wait"
+        },
+        {
+          "ref": "R-02",
+          "kind": "HARD_RULE",
+          "text": "No food delivery on a weekday"
+        },
+        {
+          "ref": "R-04",
+          "kind": "LIMIT",
+          "text": "Dining stays under 1,400 a period"
+        },
+        {
+          "ref": "R-05",
+          "kind": "LIMIT",
+          "text": "Clothing stays under 700 a period"
+        },
+        {
+          "ref": "R-06",
+          "kind": "NONNEGOTIABLE",
+          "text": "Rent and utilities come out first, always"
+        },
+        {
+          "ref": "R-07",
+          "kind": "NONNEGOTIABLE",
+          "text": "Groceries are never a thing to cut"
+        },
+        {
+          "ref": "R-08",
+          "kind": "LEAK",
+          "text": "Food delivery is my leak; I order it when I am tired, not hungry"
+        }
+      ]
+    },
+    "expect": {
+      "decision": "decline"
+    }
+  },
+  {
+    "id": "decline-transport-no-money",
+    "why": "60,000 left, 150,000 asked, and the bills are still to come.",
+    "input": {
+      "request": {
+        "amount_fils": 150000,
+        "category": "transport",
+        "note": "car service"
+      },
+      "budget_state": {
+        "period": {
+          "start": "2026-08-01T00:00:00.000Z",
+          "end": "2026-08-31T23:59:59.999Z",
+          "daysRemaining": 11,
+          "daysTotal": 31
+        },
+        "income": 1800000,
+        "committedBills": 97000,
+        "spentTotal": 1643000,
+        "spentByCategory": {
+          "groceries": {
+            "spent": 30000,
+            "limit": 150000,
+            "remaining": 120000
+          },
+          "dining": {
+            "spent": 40000,
+            "limit": 140000,
+            "remaining": 100000
+          },
+          "food-delivery": {
+            "spent": 40000,
+            "limit": 60000,
+            "remaining": 20000
+          },
+          "transport": {
+            "spent": 20000,
+            "limit": 80000,
+            "remaining": 60000
+          },
+          "clothing": {
+            "spent": 25000,
+            "limit": 70000,
+            "remaining": 45000
+          },
+          "household": {
+            "spent": 10000,
+            "limit": 50000,
+            "remaining": 40000
+          },
+          "subscriptions": {
+            "spent": 28000,
+            "limit": 30000,
+            "remaining": 2000
+          }
+        },
+        "heldTotal": 0,
+        "kept": 0,
+        "dailyBurn": 82150,
+        "projectedEndSpend": 2546650,
+        "safeToSpend": 60000
+      },
+      "category_history": {
+        "purchases_last_90d": 20,
+        "reviewed": 8,
+        "not_worth_it": 1,
+        "median_amount_fils": 6200
+      },
+      "rules": [
+        {
+          "ref": "R-01",
+          "kind": "HARD_RULE",
+          "text": "Nothing over 200 without a 48 hour wait"
+        },
+        {
+          "ref": "R-02",
+          "kind": "HARD_RULE",
+          "text": "No food delivery on a weekday"
+        },
+        {
+          "ref": "R-04",
+          "kind": "LIMIT",
+          "text": "Dining stays under 1,400 a period"
+        },
+        {
+          "ref": "R-05",
+          "kind": "LIMIT",
+          "text": "Clothing stays under 700 a period"
+        },
+        {
+          "ref": "R-06",
+          "kind": "NONNEGOTIABLE",
+          "text": "Rent and utilities come out first, always"
+        },
+        {
+          "ref": "R-07",
+          "kind": "NONNEGOTIABLE",
+          "text": "Groceries are never a thing to cut"
+        },
+        {
+          "ref": "R-08",
+          "kind": "LEAK",
+          "text": "Food delivery is my leak; I order it when I am tired, not hungry"
+        }
+      ]
+    },
+    "expect": {
+      "decision": "decline"
+    }
+  },
+  {
+    "id": "boundary-dining-just-under",
+    "why": "97,000 asked against 100,000 remaining: it fits, barely.",
+    "input": {
+      "request": {
+        "amount_fils": 97000,
+        "category": "dining",
+        "note": "group dinner"
+      },
+      "budget_state": {
+        "period": {
+          "start": "2026-08-01T00:00:00.000Z",
+          "end": "2026-08-31T23:59:59.999Z",
+          "daysRemaining": 11,
+          "daysTotal": 31
+        },
+        "income": 1800000,
+        "committedBills": 97000,
+        "spentTotal": 693000,
+        "spentByCategory": {
+          "groceries": {
+            "spent": 30000,
+            "limit": 150000,
+            "remaining": 120000
+          },
+          "dining": {
+            "spent": 40000,
+            "limit": 140000,
+            "remaining": 100000
+          },
+          "food-delivery": {
+            "spent": 40000,
+            "limit": 60000,
+            "remaining": 20000
+          },
+          "transport": {
+            "spent": 20000,
+            "limit": 80000,
+            "remaining": 60000
+          },
+          "clothing": {
+            "spent": 25000,
+            "limit": 70000,
+            "remaining": 45000
+          },
+          "household": {
+            "spent": 10000,
+            "limit": 50000,
+            "remaining": 40000
+          },
+          "subscriptions": {
+            "spent": 28000,
+            "limit": 30000,
+            "remaining": 2000
+          }
+        },
+        "heldTotal": 0,
+        "kept": 0,
+        "dailyBurn": 34650,
+        "projectedEndSpend": 1074150,
+        "safeToSpend": 1010000
+      },
+      "category_history": {
+        "purchases_last_90d": 22,
+        "reviewed": 8,
+        "not_worth_it": 1,
+        "median_amount_fils": 6200
+      },
+      "rules": [
+        {
+          "ref": "R-02",
+          "kind": "HARD_RULE",
+          "text": "No food delivery on a weekday"
+        },
+        {
+          "ref": "R-04",
+          "kind": "LIMIT",
+          "text": "Dining stays under 1,400 a period"
+        },
+        {
+          "ref": "R-05",
+          "kind": "LIMIT",
+          "text": "Clothing stays under 700 a period"
+        },
+        {
+          "ref": "R-06",
+          "kind": "NONNEGOTIABLE",
+          "text": "Rent and utilities come out first, always"
+        },
+        {
+          "ref": "R-07",
+          "kind": "NONNEGOTIABLE",
+          "text": "Groceries are never a thing to cut"
+        },
+        {
+          "ref": "R-08",
+          "kind": "LEAK",
+          "text": "Food delivery is my leak; I order it when I am tired, not hungry"
+        }
+      ]
+    },
+    "expect": {
+      "decision": "allow"
+    }
+  },
+  {
+    "id": "boundary-dining-just-over",
+    "why": "102,000 asked against 100,000 remaining: over by 2%, still affordable.",
+    "input": {
+      "request": {
+        "amount_fils": 102000,
+        "category": "dining",
+        "note": "group dinner"
+      },
+      "budget_state": {
+        "period": {
+          "start": "2026-08-01T00:00:00.000Z",
+          "end": "2026-08-31T23:59:59.999Z",
+          "daysRemaining": 11,
+          "daysTotal": 31
+        },
+        "income": 1800000,
+        "committedBills": 97000,
+        "spentTotal": 693000,
+        "spentByCategory": {
+          "groceries": {
+            "spent": 30000,
+            "limit": 150000,
+            "remaining": 120000
+          },
+          "dining": {
+            "spent": 40000,
+            "limit": 140000,
+            "remaining": 100000
+          },
+          "food-delivery": {
+            "spent": 40000,
+            "limit": 60000,
+            "remaining": 20000
+          },
+          "transport": {
+            "spent": 20000,
+            "limit": 80000,
+            "remaining": 60000
+          },
+          "clothing": {
+            "spent": 25000,
+            "limit": 70000,
+            "remaining": 45000
+          },
+          "household": {
+            "spent": 10000,
+            "limit": 50000,
+            "remaining": 40000
+          },
+          "subscriptions": {
+            "spent": 28000,
+            "limit": 30000,
+            "remaining": 2000
+          }
+        },
+        "heldTotal": 0,
+        "kept": 0,
+        "dailyBurn": 34650,
+        "projectedEndSpend": 1074150,
+        "safeToSpend": 1010000
+      },
+      "category_history": {
+        "purchases_last_90d": 22,
+        "reviewed": 8,
+        "not_worth_it": 1,
+        "median_amount_fils": 6200
+      },
+      "rules": [
+        {
+          "ref": "R-02",
+          "kind": "HARD_RULE",
+          "text": "No food delivery on a weekday"
+        },
+        {
+          "ref": "R-04",
+          "kind": "LIMIT",
+          "text": "Dining stays under 1,400 a period"
+        },
+        {
+          "ref": "R-05",
+          "kind": "LIMIT",
+          "text": "Clothing stays under 700 a period"
+        },
+        {
+          "ref": "R-06",
+          "kind": "NONNEGOTIABLE",
+          "text": "Rent and utilities come out first, always"
+        },
+        {
+          "ref": "R-07",
+          "kind": "NONNEGOTIABLE",
+          "text": "Groceries are never a thing to cut"
+        },
+        {
+          "ref": "R-08",
+          "kind": "LEAK",
+          "text": "Food delivery is my leak; I order it when I am tired, not hungry"
+        }
+      ]
+    },
+    "expect": {
+      "decision": "hold"
+    }
+  },
+  {
+    "id": "boundary-transport-just-under",
+    "why": "59,000 against 60,000 remaining.",
+    "input": {
+      "request": {
+        "amount_fils": 59000,
+        "category": "transport",
+        "note": "tyres"
+      },
+      "budget_state": {
+        "period": {
+          "start": "2026-08-01T00:00:00.000Z",
+          "end": "2026-08-31T23:59:59.999Z",
+          "daysRemaining": 11,
+          "daysTotal": 31
+        },
+        "income": 1800000,
+        "committedBills": 97000,
+        "spentTotal": 693000,
+        "spentByCategory": {
+          "groceries": {
+            "spent": 30000,
+            "limit": 150000,
+            "remaining": 120000
+          },
+          "dining": {
+            "spent": 40000,
+            "limit": 140000,
+            "remaining": 100000
+          },
+          "food-delivery": {
+            "spent": 40000,
+            "limit": 60000,
+            "remaining": 20000
+          },
+          "transport": {
+            "spent": 20000,
+            "limit": 80000,
+            "remaining": 60000
+          },
+          "clothing": {
+            "spent": 25000,
+            "limit": 70000,
+            "remaining": 45000
+          },
+          "household": {
+            "spent": 10000,
+            "limit": 50000,
+            "remaining": 40000
+          },
+          "subscriptions": {
+            "spent": 28000,
+            "limit": 30000,
+            "remaining": 2000
+          }
+        },
+        "heldTotal": 0,
+        "kept": 0,
+        "dailyBurn": 34650,
+        "projectedEndSpend": 1074150,
+        "safeToSpend": 1010000
+      },
+      "category_history": {
+        "purchases_last_90d": 20,
+        "reviewed": 8,
+        "not_worth_it": 0,
+        "median_amount_fils": 6200
+      },
+      "rules": [
+        {
+          "ref": "R-02",
+          "kind": "HARD_RULE",
+          "text": "No food delivery on a weekday"
+        },
+        {
+          "ref": "R-04",
+          "kind": "LIMIT",
+          "text": "Dining stays under 1,400 a period"
+        },
+        {
+          "ref": "R-05",
+          "kind": "LIMIT",
+          "text": "Clothing stays under 700 a period"
+        },
+        {
+          "ref": "R-06",
+          "kind": "NONNEGOTIABLE",
+          "text": "Rent and utilities come out first, always"
+        },
+        {
+          "ref": "R-07",
+          "kind": "NONNEGOTIABLE",
+          "text": "Groceries are never a thing to cut"
+        },
+        {
+          "ref": "R-08",
+          "kind": "LEAK",
+          "text": "Food delivery is my leak; I order it when I am tired, not hungry"
+        }
+      ]
+    },
+    "expect": {
+      "decision": "allow"
+    }
+  },
+  {
+    "id": "boundary-transport-just-over",
+    "why": "61,500 against 60,000 remaining: 2.5% over, affordable.",
+    "input": {
+      "request": {
+        "amount_fils": 61500,
+        "category": "transport",
+        "note": "tyres"
+      },
+      "budget_state": {
+        "period": {
+          "start": "2026-08-01T00:00:00.000Z",
+          "end": "2026-08-31T23:59:59.999Z",
+          "daysRemaining": 11,
+          "daysTotal": 31
+        },
+        "income": 1800000,
+        "committedBills": 97000,
+        "spentTotal": 693000,
+        "spentByCategory": {
+          "groceries": {
+            "spent": 30000,
+            "limit": 150000,
+            "remaining": 120000
+          },
+          "dining": {
+            "spent": 40000,
+            "limit": 140000,
+            "remaining": 100000
+          },
+          "food-delivery": {
+            "spent": 40000,
+            "limit": 60000,
+            "remaining": 20000
+          },
+          "transport": {
+            "spent": 20000,
+            "limit": 80000,
+            "remaining": 60000
+          },
+          "clothing": {
+            "spent": 25000,
+            "limit": 70000,
+            "remaining": 45000
+          },
+          "household": {
+            "spent": 10000,
+            "limit": 50000,
+            "remaining": 40000
+          },
+          "subscriptions": {
+            "spent": 28000,
+            "limit": 30000,
+            "remaining": 2000
+          }
+        },
+        "heldTotal": 0,
+        "kept": 0,
+        "dailyBurn": 34650,
+        "projectedEndSpend": 1074150,
+        "safeToSpend": 1010000
+      },
+      "category_history": {
+        "purchases_last_90d": 20,
+        "reviewed": 8,
+        "not_worth_it": 0,
+        "median_amount_fils": 6200
+      },
+      "rules": [
+        {
+          "ref": "R-02",
+          "kind": "HARD_RULE",
+          "text": "No food delivery on a weekday"
+        },
+        {
+          "ref": "R-04",
+          "kind": "LIMIT",
+          "text": "Dining stays under 1,400 a period"
+        },
+        {
+          "ref": "R-05",
+          "kind": "LIMIT",
+          "text": "Clothing stays under 700 a period"
+        },
+        {
+          "ref": "R-06",
+          "kind": "NONNEGOTIABLE",
+          "text": "Rent and utilities come out first, always"
+        },
+        {
+          "ref": "R-07",
+          "kind": "NONNEGOTIABLE",
+          "text": "Groceries are never a thing to cut"
+        },
+        {
+          "ref": "R-08",
+          "kind": "LEAK",
+          "text": "Food delivery is my leak; I order it when I am tired, not hungry"
+        }
+      ]
+    },
+    "expect": {
+      "decision": "hold"
+    }
+  },
+  {
+    "id": "boundary-safe-to-spend-just-under",
+    "why": "49,000 against 50,000 safe to spend, on an untracked category.",
+    "input": {
+      "request": {
+        "amount_fils": 49000,
+        "category": "household",
+        "note": "desk"
+      },
+      "budget_state": {
+        "period": {
+          "start": "2026-08-01T00:00:00.000Z",
+          "end": "2026-08-31T23:59:59.999Z",
+          "daysRemaining": 11,
+          "daysTotal": 31
+        },
+        "income": 1800000,
+        "committedBills": 97000,
+        "spentTotal": 1653000,
+        "spentByCategory": {
+          "groceries": {
+            "spent": 30000,
+            "limit": 150000,
+            "remaining": 120000
+          },
+          "dining": {
+            "spent": 40000,
+            "limit": 140000,
+            "remaining": 100000
+          },
+          "food-delivery": {
+            "spent": 40000,
+            "limit": 60000,
+            "remaining": 20000
+          },
+          "transport": {
+            "spent": 20000,
+            "limit": 80000,
+            "remaining": 60000
+          },
+          "clothing": {
+            "spent": 25000,
+            "limit": 70000,
+            "remaining": 45000
+          },
+          "household": {
+            "spent": 10000,
+            "limit": null,
+            "remaining": null
+          },
+          "subscriptions": {
+            "spent": 28000,
+            "limit": 30000,
+            "remaining": 2000
+          }
+        },
+        "heldTotal": 0,
+        "kept": 0,
+        "dailyBurn": 82650,
+        "projectedEndSpend": 2562150,
+        "safeToSpend": 50000
+      },
+      "category_history": {
+        "purchases_last_90d": 8,
+        "reviewed": 4,
+        "not_worth_it": 0,
+        "median_amount_fils": 6200
+      },
+      "rules": [
+        {
+          "ref": "R-02",
+          "kind": "HARD_RULE",
+          "text": "No food delivery on a weekday"
+        },
+        {
+          "ref": "R-04",
+          "kind": "LIMIT",
+          "text": "Dining stays under 1,400 a period"
+        },
+        {
+          "ref": "R-05",
+          "kind": "LIMIT",
+          "text": "Clothing stays under 700 a period"
+        },
+        {
+          "ref": "R-06",
+          "kind": "NONNEGOTIABLE",
+          "text": "Rent and utilities come out first, always"
+        },
+        {
+          "ref": "R-07",
+          "kind": "NONNEGOTIABLE",
+          "text": "Groceries are never a thing to cut"
+        },
+        {
+          "ref": "R-08",
+          "kind": "LEAK",
+          "text": "Food delivery is my leak; I order it when I am tired, not hungry"
+        }
+      ]
+    },
+    "expect": {
+      "decision": "allow"
+    }
+  },
+  {
+    "id": "boundary-safe-to-spend-just-over",
+    "why": "51,000 against 50,000 safe to spend: the money is not there.",
+    "input": {
+      "request": {
+        "amount_fils": 51000,
+        "category": "household",
+        "note": "desk"
+      },
+      "budget_state": {
+        "period": {
+          "start": "2026-08-01T00:00:00.000Z",
+          "end": "2026-08-31T23:59:59.999Z",
+          "daysRemaining": 11,
+          "daysTotal": 31
+        },
+        "income": 1800000,
+        "committedBills": 97000,
+        "spentTotal": 1653000,
+        "spentByCategory": {
+          "groceries": {
+            "spent": 30000,
+            "limit": 150000,
+            "remaining": 120000
+          },
+          "dining": {
+            "spent": 40000,
+            "limit": 140000,
+            "remaining": 100000
+          },
+          "food-delivery": {
+            "spent": 40000,
+            "limit": 60000,
+            "remaining": 20000
+          },
+          "transport": {
+            "spent": 20000,
+            "limit": 80000,
+            "remaining": 60000
+          },
+          "clothing": {
+            "spent": 25000,
+            "limit": 70000,
+            "remaining": 45000
+          },
+          "household": {
+            "spent": 10000,
+            "limit": null,
+            "remaining": null
+          },
+          "subscriptions": {
+            "spent": 28000,
+            "limit": 30000,
+            "remaining": 2000
+          }
+        },
+        "heldTotal": 0,
+        "kept": 0,
+        "dailyBurn": 82650,
+        "projectedEndSpend": 2562150,
+        "safeToSpend": 50000
+      },
+      "category_history": {
+        "purchases_last_90d": 8,
+        "reviewed": 4,
+        "not_worth_it": 0,
+        "median_amount_fils": 6200
+      },
+      "rules": [
+        {
+          "ref": "R-02",
+          "kind": "HARD_RULE",
+          "text": "No food delivery on a weekday"
+        },
+        {
+          "ref": "R-04",
+          "kind": "LIMIT",
+          "text": "Dining stays under 1,400 a period"
+        },
+        {
+          "ref": "R-05",
+          "kind": "LIMIT",
+          "text": "Clothing stays under 700 a period"
+        },
+        {
+          "ref": "R-06",
+          "kind": "NONNEGOTIABLE",
+          "text": "Rent and utilities come out first, always"
+        },
+        {
+          "ref": "R-07",
+          "kind": "NONNEGOTIABLE",
+          "text": "Groceries are never a thing to cut"
+        },
+        {
+          "ref": "R-08",
+          "kind": "LEAK",
+          "text": "Food delivery is my leak; I order it when I am tired, not hungry"
+        }
+      ]
+    },
+    "expect": {
+      "decision": "decline"
+    }
+  },
+  {
+    "id": "rule-wins-wait-over-200",
+    "why": "450 is over the 200 threshold. The money is plainly there; the rule still asks for 48 hours.",
+    "input": {
+      "request": {
+        "amount_fils": 45000,
+        "category": "household",
+        "note": "headphones"
+      },
+      "budget_state": {
+        "period": {
+          "start": "2026-08-01T00:00:00.000Z",
+          "end": "2026-08-31T23:59:59.999Z",
+          "daysRemaining": 11,
+          "daysTotal": 31
+        },
+        "income": 1800000,
+        "committedBills": 97000,
+        "spentTotal": 488000,
+        "spentByCategory": {
+          "groceries": {
+            "spent": 30000,
+            "limit": 150000,
+            "remaining": 120000
+          },
+          "dining": {
+            "spent": 40000,
+            "limit": 140000,
+            "remaining": 100000
+          },
+          "food-delivery": {
+            "spent": 40000,
+            "limit": 60000,
+            "remaining": 20000
+          },
+          "transport": {
+            "spent": 20000,
+            "limit": 80000,
+            "remaining": 60000
+          },
+          "clothing": {
+            "spent": 25000,
+            "limit": 70000,
+            "remaining": 45000
+          },
+          "household": {
+            "spent": 5000,
+            "limit": 200000,
+            "remaining": 195000
+          },
+          "subscriptions": {
+            "spent": 28000,
+            "limit": 30000,
+            "remaining": 2000
+          }
+        },
+        "heldTotal": 0,
+        "kept": 0,
+        "dailyBurn": 24400,
+        "projectedEndSpend": 756400,
+        "safeToSpend": 1215000
+      },
+      "category_history": {
+        "purchases_last_90d": 8,
+        "reviewed": 5,
+        "not_worth_it": 1,
+        "median_amount_fils": 6200
+      },
+      "rules": [
+        {
+          "ref": "R-01",
+          "kind": "HARD_RULE",
+          "text": "Nothing over 200 without a 48 hour wait"
+        },
+        {
+          "ref": "R-02",
+          "kind": "HARD_RULE",
+          "text": "No food delivery on a weekday"
+        },
+        {
+          "ref": "R-04",
+          "kind": "LIMIT",
+          "text": "Dining stays under 1,400 a period"
+        },
+        {
+          "ref": "R-05",
+          "kind": "LIMIT",
+          "text": "Clothing stays under 700 a period"
+        },
+        {
+          "ref": "R-06",
+          "kind": "NONNEGOTIABLE",
+          "text": "Rent and utilities come out first, always"
+        },
+        {
+          "ref": "R-07",
+          "kind": "NONNEGOTIABLE",
+          "text": "Groceries are never a thing to cut"
+        },
+        {
+          "ref": "R-08",
+          "kind": "LEAK",
+          "text": "Food delivery is my leak; I order it when I am tired, not hungry"
+        }
+      ]
+    },
+    "expect": {
+      "decision": "hold",
+      "rule_ref": "R-01"
+    }
+  },
+  {
+    "id": "rule-wins-weekday-delivery",
+    "why": "A hard rule forbids it outright, and the arithmetic is comfortable.",
+    "input": {
+      "request": {
+        "amount_fils": 6000,
+        "category": "food-delivery",
+        "note": "Tuesday lunch at my desk"
+      },
+      "budget_state": {
+        "period": {
+          "start": "2026-08-01T00:00:00.000Z",
+          "end": "2026-08-31T23:59:59.999Z",
+          "daysRemaining": 11,
+          "daysTotal": 31
+        },
+        "income": 1800000,
+        "committedBills": 97000,
+        "spentTotal": 493000,
+        "spentByCategory": {
+          "groceries": {
+            "spent": 30000,
+            "limit": 150000,
+            "remaining": 120000
+          },
+          "dining": {
+            "spent": 40000,
+            "limit": 140000,
+            "remaining": 100000
+          },
+          "food-delivery": {
+            "spent": 40000,
+            "limit": 60000,
+            "remaining": 20000
+          },
+          "transport": {
+            "spent": 20000,
+            "limit": 80000,
+            "remaining": 60000
+          },
+          "clothing": {
+            "spent": 25000,
+            "limit": 70000,
+            "remaining": 45000
+          },
+          "household": {
+            "spent": 10000,
+            "limit": 50000,
+            "remaining": 40000
+          },
+          "subscriptions": {
+            "spent": 28000,
+            "limit": 30000,
+            "remaining": 2000
+          }
+        },
+        "heldTotal": 0,
+        "kept": 0,
+        "dailyBurn": 24650,
+        "projectedEndSpend": 764150,
+        "safeToSpend": 1210000
+      },
+      "category_history": {
+        "purchases_last_90d": 18,
+        "reviewed": 9,
+        "not_worth_it": 5,
+        "median_amount_fils": 6200
+      },
+      "rules": [
+        {
+          "ref": "R-01",
+          "kind": "HARD_RULE",
+          "text": "Nothing over 200 without a 48 hour wait"
+        },
+        {
+          "ref": "R-02",
+          "kind": "HARD_RULE",
+          "text": "No food delivery on a weekday"
+        },
+        {
+          "ref": "R-04",
+          "kind": "LIMIT",
+          "text": "Dining stays under 1,400 a period"
+        },
+        {
+          "ref": "R-05",
+          "kind": "LIMIT",
+          "text": "Clothing stays under 700 a period"
+        },
+        {
+          "ref": "R-06",
+          "kind": "NONNEGOTIABLE",
+          "text": "Rent and utilities come out first, always"
+        },
+        {
+          "ref": "R-07",
+          "kind": "NONNEGOTIABLE",
+          "text": "Groceries are never a thing to cut"
+        },
+        {
+          "ref": "R-08",
+          "kind": "LEAK",
+          "text": "Food delivery is my leak; I order it when I am tired, not hungry"
+        }
+      ]
+    },
+    "expect": {
+      "decision": "decline",
+      "rule_ref": "R-02"
+    }
+  },
+  {
+    "id": "rule-wins-no-new-clothes",
+    "why": "Affordable, inside the limit, and forbidden by the user's own hard rule.",
+    "input": {
+      "request": {
+        "amount_fils": 30000,
+        "category": "clothing",
+        "note": "new jeans"
+      },
+      "budget_state": {
+        "period": {
+          "start": "2026-08-01T00:00:00.000Z",
+          "end": "2026-08-31T23:59:59.999Z",
+          "daysRemaining": 11,
+          "daysTotal": 31
+        },
+        "income": 1800000,
+        "committedBills": 97000,
+        "spentTotal": 473000,
+        "spentByCategory": {
+          "groceries": {
+            "spent": 30000,
+            "limit": 150000,
+            "remaining": 120000
+          },
+          "dining": {
+            "spent": 40000,
+            "limit": 140000,
+            "remaining": 100000
+          },
+          "food-delivery": {
+            "spent": 40000,
+            "limit": 60000,
+            "remaining": 20000
+          },
+          "transport": {
+            "spent": 20000,
+            "limit": 80000,
+            "remaining": 60000
+          },
+          "clothing": {
+            "spent": 5000,
+            "limit": 70000,
+            "remaining": 65000
+          },
+          "household": {
+            "spent": 10000,
+            "limit": 50000,
+            "remaining": 40000
+          },
+          "subscriptions": {
+            "spent": 28000,
+            "limit": 30000,
+            "remaining": 2000
+          }
+        },
+        "heldTotal": 0,
+        "kept": 0,
+        "dailyBurn": 23650,
+        "projectedEndSpend": 733150,
+        "safeToSpend": 1230000
+      },
+      "category_history": {
+        "purchases_last_90d": 6,
+        "reviewed": 3,
+        "not_worth_it": 1,
+        "median_amount_fils": 6200
+      },
+      "rules": [
+        {
+          "ref": "R-01",
+          "kind": "HARD_RULE",
+          "text": "Nothing over 200 without a 48 hour wait"
+        },
+        {
+          "ref": "R-02",
+          "kind": "HARD_RULE",
+          "text": "No food delivery on a weekday"
+        },
+        {
+          "ref": "R-04",
+          "kind": "LIMIT",
+          "text": "Dining stays under 1,400 a period"
+        },
+        {
+          "ref": "R-05",
+          "kind": "LIMIT",
+          "text": "Clothing stays under 700 a period"
+        },
+        {
+          "ref": "R-06",
+          "kind": "NONNEGOTIABLE",
+          "text": "Rent and utilities come out first, always"
+        },
+        {
+          "ref": "R-07",
+          "kind": "NONNEGOTIABLE",
+          "text": "Groceries are never a thing to cut"
+        },
+        {
+          "ref": "R-08",
+          "kind": "LEAK",
+          "text": "Food delivery is my leak; I order it when I am tired, not hungry"
+        },
+        {
+          "ref": "R-03",
+          "kind": "HARD_RULE",
+          "text": "No new clothes until I have worn everything I already own"
+        }
+      ]
+    },
+    "expect": {
+      "decision": "decline",
+      "rule_ref": "R-03"
+    }
+  },
+  {
+    "id": "rule-wins-just-over-threshold",
+    "why": "201 is over 200 by one, with a very large safe-to-spend behind it.",
+    "input": {
+      "request": {
+        "amount_fils": 20100,
+        "category": "household",
+        "note": "lamp"
+      },
+      "budget_state": {
+        "period": {
+          "start": "2026-08-01T00:00:00.000Z",
+          "end": "2026-08-31T23:59:59.999Z",
+          "daysRemaining": 11,
+          "daysTotal": 31
+        },
+        "income": 1800000,
+        "committedBills": 97000,
+        "spentTotal": 388000,
+        "spentByCategory": {
+          "groceries": {
+            "spent": 30000,
+            "limit": 150000,
+            "remaining": 120000
+          },
+          "dining": {
+            "spent": 40000,
+            "limit": 140000,
+            "remaining": 100000
+          },
+          "food-delivery": {
+            "spent": 40000,
+            "limit": 60000,
+            "remaining": 20000
+          },
+          "transport": {
+            "spent": 20000,
+            "limit": 80000,
+            "remaining": 60000
+          },
+          "clothing": {
+            "spent": 25000,
+            "limit": 70000,
+            "remaining": 45000
+          },
+          "household": {
+            "spent": 5000,
+            "limit": 200000,
+            "remaining": 195000
+          },
+          "subscriptions": {
+            "spent": 28000,
+            "limit": 30000,
+            "remaining": 2000
+          }
+        },
+        "heldTotal": 0,
+        "kept": 0,
+        "dailyBurn": 19400,
+        "projectedEndSpend": 601400,
+        "safeToSpend": 1315000
+      },
+      "category_history": {
+        "purchases_last_90d": 8,
+        "reviewed": 4,
+        "not_worth_it": 0,
+        "median_amount_fils": 6200
+      },
+      "rules": [
+        {
+          "ref": "R-01",
+          "kind": "HARD_RULE",
+          "text": "Nothing over 200 without a 48 hour wait"
+        },
+        {
+          "ref": "R-02",
+          "kind": "HARD_RULE",
+          "text": "No food delivery on a weekday"
+        },
+        {
+          "ref": "R-04",
+          "kind": "LIMIT",
+          "text": "Dining stays under 1,400 a period"
+        },
+        {
+          "ref": "R-05",
+          "kind": "LIMIT",
+          "text": "Clothing stays under 700 a period"
+        },
+        {
+          "ref": "R-06",
+          "kind": "NONNEGOTIABLE",
+          "text": "Rent and utilities come out first, always"
+        },
+        {
+          "ref": "R-07",
+          "kind": "NONNEGOTIABLE",
+          "text": "Groceries are never a thing to cut"
+        },
+        {
+          "ref": "R-08",
+          "kind": "LEAK",
+          "text": "Food delivery is my leak; I order it when I am tired, not hungry"
+        }
+      ]
+    },
+    "expect": {
+      "decision": "hold",
+      "rule_ref": "R-01"
+    }
+  },
+  {
+    "id": "no-rules-affordable",
+    "why": "An empty policy. Nothing to cite, and the arithmetic is comfortable.",
+    "input": {
+      "request": {
+        "amount_fils": 9000,
+        "category": "groceries",
+        "note": "shop"
+      },
+      "budget_state": {
+        "period": {
+          "start": "2026-08-01T00:00:00.000Z",
+          "end": "2026-08-31T23:59:59.999Z",
+          "daysRemaining": 11,
+          "daysTotal": 31
+        },
+        "income": 1800000,
+        "committedBills": 97000,
+        "spentTotal": 670000,
+        "spentByCategory": {
+          "groceries": {
+            "spent": 70000,
+            "limit": 150000,
+            "remaining": 80000
+          }
+        },
+        "heldTotal": 0,
+        "kept": 0,
+        "dailyBurn": 33500,
+        "projectedEndSpend": 1038500,
+        "safeToSpend": 1033000
+      },
+      "category_history": {
+        "purchases_last_90d": 26,
+        "reviewed": 10,
+        "not_worth_it": 1,
+        "median_amount_fils": 6200
+      },
+      "rules": []
+    },
+    "expect": {
+      "decision": "allow"
+    }
+  },
+  {
+    "id": "no-rules-not-affordable",
+    "why": "An empty policy and not enough money.",
+    "input": {
+      "request": {
+        "amount_fils": 120000,
+        "category": "clothing",
+        "note": "coat"
+      },
+      "budget_state": {
+        "period": {
+          "start": "2026-08-01T00:00:00.000Z",
+          "end": "2026-08-31T23:59:59.999Z",
+          "daysRemaining": 11,
+          "daysTotal": 31
+        },
+        "income": 1800000,
+        "committedBills": 97000,
+        "spentTotal": 1673000,
+        "spentByCategory": {
+          "clothing": {
+            "spent": 25000,
+            "limit": 70000,
+            "remaining": 45000
+          }
+        },
+        "heldTotal": 0,
+        "kept": 0,
+        "dailyBurn": 83650,
+        "projectedEndSpend": 2593150,
+        "safeToSpend": 30000
+      },
+      "category_history": {
+        "purchases_last_90d": 6,
+        "reviewed": 3,
+        "not_worth_it": 1,
+        "median_amount_fils": 6200
+      },
+      "rules": []
+    },
+    "expect": {
+      "decision": "decline"
+    }
+  }
+]
