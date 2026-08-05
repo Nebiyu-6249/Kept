@@ -67,8 +67,7 @@ export function Figure({
       return;
     }
     node.textContent = format(Math.round(counted.get()));
-    // format is derived from props that are already dependencies.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // `format` is derived from props that are already dependencies here.
   }, [scrollBound, reduced, finalText]);
 
   const figure = (

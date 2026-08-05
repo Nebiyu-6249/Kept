@@ -2,12 +2,11 @@
   "name": "kept",
   "version": "1.0.0",
   "private": true,
-  "description": "KEPT — a personal spending advisor. Asks one question before a purchase, enforces a wait when the answer is not yet, and counts the money that was never spent.",
+  "description": "KEPT \u2014 a personal spending advisor. Asks one question before a purchase, enforces a wait when the answer is not yet, and counts the money that was never spent.",
   "scripts": {
     "dev": "next dev",
     "build": "prisma generate && next build",
     "start": "next start",
-    "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",

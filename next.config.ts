@@ -4,7 +4,9 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   eslint: {
-    // Lint is run as its own CI step; a lint warning should not fail the deploy build.
+    // No ESLint config is set up: `next lint` is deprecated in 15.5 and TypeScript
+    // strict plus `npm run typecheck` covers what mattered here. This keeps a
+    // future lint config from silently gating deploys.
     ignoreDuringBuilds: true,
   },
   serverExternalPackages: ["@prisma/client", "@anthropic-ai/sdk"],

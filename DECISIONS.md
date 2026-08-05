@@ -171,3 +171,17 @@ pre-provisioned Chromium run the suite without downloading a second copy.
 Nothing in §1.1. No investment or lending guidance, no bank integrations, no
 receipt OCR, no multi-currency, no social features, no notifications beyond
 in-app.
+
+## Tooling
+
+**No ESLint.** `next lint` is deprecated in Next 15.5 and prompts
+interactively, which makes it a script that hangs rather than one that runs.
+TypeScript `strict` with `noUncheckedIndexedAccess`, plus `npm run typecheck`
+in CI, covers what mattered here. `eslint.ignoreDuringBuilds` stays set so
+adding a config later cannot silently start gating deploys.
+
+**Seed idempotency is delete-then-rebuild.** The seeded user is removed —
+cascading to everything it owns — and rewritten from a fixed PRNG seed. Upserts
+would not have been enough: the dataset is anchored to "the last 90 days", so
+its dates move with the calendar and an upsert key containing `occurredAt`
+would accumulate a new copy every day.
