@@ -179,6 +179,114 @@
   .hairline {
     border-color: var(--color-hairline);
   }
+
+  /* --- The ledger row (§9.4): the single layout primitive of the whole app.
+     Transactions, policy rules, holds, bills, settings and insights all render
+     through this. There is no card anywhere. --- */
+
+  /* The borders live on the block, not the row, so an expanded panel can be a
+     sibling of the row control rather than a child of it — nesting inputs
+     inside a <button> is invalid and unreachable by keyboard. */
+  .ledger-block {
+    border-bottom: 1px solid var(--color-hairline);
+    /* Held transparent so the marker variant does not shift the row by 1px. */
+    border-left: 1px solid transparent;
+    padding-left: 12px;
+  }
+
+  .ledger-row {
+    display: grid;
+    align-items: baseline;
+    gap: 12px;
+    padding-block: 16px;
+    width: 100%;
+    grid-template-columns: minmax(72px, auto) 1fr;
+    grid-template-areas:
+      "label value"
+      "desc  desc";
+  }
+
+  @media (min-width: 640px) {
+    .ledger-row {
+      grid-template-columns: minmax(72px, auto) 1fr auto;
+      grid-template-areas: "label desc value";
+    }
+  }
+
+  .ledger-block--marker {
+    border-left-color: var(--color-accent);
+  }
+
+  .ledger-row__label {
+    grid-area: label;
+  }
+
+  .ledger-row__desc {
+    grid-area: desc;
+    min-width: 0;
+  }
+
+  .ledger-row__value {
+    grid-area: value;
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .ledger-block:hover > .ledger-row-control {
+    color: var(--color-accent);
+  }
+
+  /* --- The one button (§9.3). Square, 1px hairline, transparent ground.
+     Hover and active swap border and text to accent; the accent never fills. --- */
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 16px;
+    border: 1px solid var(--color-hairline);
+    background: transparent;
+    color: var(--color-ink);
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition:
+      border-color 160ms ease,
+      color 160ms ease;
+  }
+
+  .btn:hover:not(:disabled),
+  .btn[aria-pressed="true"] {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  .btn:disabled {
+    color: var(--color-muted);
+    cursor: not-allowed;
+  }
+
+  /* Text field: no box, a single hairline underneath. */
+  .field {
+    width: 100%;
+    border: 0;
+    border-bottom: 1px solid var(--color-hairline);
+    padding-block: 8px;
+    outline-offset: 4px;
+    transition: border-color 160ms ease;
+  }
+
+  .field:focus {
+    border-bottom-color: var(--color-accent);
+  }
+
+  .field::placeholder {
+    color: var(--color-muted);
+  }
 }
 
 @layer utilities {

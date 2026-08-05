@@ -33,7 +33,26 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${familjen.variable} ${spline.variable}`}>
-      <body>{children}</body>
+      <head>
+        {/*
+          The reveal start states only apply under `.js-reveal`. This adds the
+          class before first paint, and only when reduced motion has not been
+          requested — so the reduced-motion render and the no-JS render are both
+          the finished app rather than a page of invisible blocks.
+        */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "try{if(!matchMedia('(prefers-reduced-motion: reduce)').matches){document.documentElement.classList.add('js-reveal')}}catch(e){}",
+          }}
+        />
+      </head>
+      <body>
+        <a href="#main" className="btn sr-only focus:not-sr-only focus:absolute focus:z-[100] focus:m-2">
+          Skip to content
+        </a>
+        {children}
+      </body>
     </html>
   );
 }
