@@ -7,9 +7,9 @@ const NOW = new Date("2026-08-11T09:00:00Z"); // local 11 Aug, day 11 of 31
 const period = currentPeriod({ periodType: "MONTHLY", periodAnchor: 1 }, NOW, TZ);
 
 const categories = [
-  { id: "c-groceries", slug: "groceries", limitPerPeriod: 150_000 },
-  { id: "c-dining", slug: "dining", limitPerPeriod: 140_000 },
-  { id: "c-rent", slug: "rent", limitPerPeriod: null },
+  { id: "c-groceries", slug: "groceries", limitPerPeriod: 150_000, discretionary: true },
+  { id: "c-dining", slug: "dining", limitPerPeriod: 140_000, discretionary: true },
+  { id: "c-rent", slug: "rent", limitPerPeriod: null, discretionary: false },
 ];
 
 function build(over: Partial<BudgetInput> = {}) {
@@ -116,6 +116,27 @@ describe("assembleBudgetState", () => {
   it("lets safe-to-spend go negative rather than clamping a real overspend", () => {
     const state = build({ transactions: [{ amount: 2_000_000, categoryId: "c-groceries" }] });
     expect(state.safeToSpend).toBeLessThan(0);
+  });
+
+  it("keeps a lump-sum bill out of the discretionary burn", () => {
+    const state = build({
+      transactions: [
+        { amount: 700_000, categoryId: "c-rent" },
+        { amount: 110_000, categoryId: "c-dining" },
+      ],
+    });
+    // dailyBurn follows §6.2 exactly and is dominated by the rent payment.
+    expect(state.spentTotal).toBe(810_000);
+    expect(state.dailyBurn).toBe(Math.round(810_000 / 11));
+    // The discretionary companion is what the burn line reads.
+    expect(state.spentDiscretionary).toBe(110_000);
+    expect(state.dailyBurnDiscretionary).toBe(10_000);
+    expect(state.projectedEndSpendDiscretionary).toBe(110_000 + 10_000 * 20);
+  });
+
+  it("treats uncategorised spend as discretionary", () => {
+    const state = build({ transactions: [{ amount: 9_000, categoryId: null }] });
+    expect(state.spentDiscretionary).toBe(9_000);
   });
 
   it("takes Kept from the same rule the metric is defined by", () => {

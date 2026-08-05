@@ -29,6 +29,15 @@ export type BudgetState = {
   dailyBurn: number;
   projectedEndSpend: number;
   safeToSpend: number;
+  /**
+   * Spend excluding non-discretionary categories. A rent payment on day one
+   * makes `dailyBurn` project a number nobody should act on, so the figures the
+   * burn line reads are carried separately and labelled as such — rather than
+   * quietly redefining `dailyBurn`, which §6.2 fixes as spentTotal / elapsed.
+   */
+  spentDiscretionary: number;
+  dailyBurnDiscretionary: number;
+  projectedEndSpendDiscretionary: number;
 };
 
 export type BudgetInput = {
@@ -37,7 +46,12 @@ export type BudgetInput = {
   bills: ReadonlyArray<{ amount: number; dueDay: number; active: boolean }>;
   /** Transactions already scoped to the period. */
   transactions: ReadonlyArray<{ amount: number; categoryId: string | null }>;
-  categories: ReadonlyArray<{ id: string; slug: string; limitPerPeriod: number | null }>;
+  categories: ReadonlyArray<{
+    id: string;
+    slug: string;
+    limitPerPeriod: number | null;
+    discretionary: boolean;
+  }>;
   /** Intents currently in state HELD, whatever their hold expiry. */
   heldIntents: ReadonlyArray<{ amount: number }>;
   /** Every intent that could contribute to Kept this period. */
@@ -76,6 +90,7 @@ export function assembleBudgetState(input: BudgetInput): BudgetState {
   const timeZone = input.timeZone ?? APP_TIMEZONE;
 
   const slugById = new Map(categories.map((c) => [c.id, c.slug]));
+  const discretionaryById = new Map(categories.map((c) => [c.id, c.discretionary]));
 
   const spentByCategory: Record<string, CategoryBudget> = {};
   for (const category of categories) {
@@ -87,8 +102,13 @@ export function assembleBudgetState(input: BudgetInput): BudgetState {
   }
 
   let spentTotal = 0;
+  let spentDiscretionary = 0;
   for (const tx of transactions) {
     spentTotal += tx.amount;
+    // Spend with no category is discretionary until the user says otherwise.
+    if (!tx.categoryId || discretionaryById.get(tx.categoryId) !== false) {
+      spentDiscretionary += tx.amount;
+    }
     const slug = tx.categoryId ? slugById.get(tx.categoryId) : undefined;
     if (!slug) continue;
     const bucket = spentByCategory[slug];
@@ -109,6 +129,10 @@ export function assembleBudgetState(input: BudgetInput): BudgetState {
   const projectedEndSpend = spentTotal + dailyBurn * period.daysRemaining;
   const safeToSpend = income - committedBills - spentTotal - heldTotal;
 
+  const dailyBurnDiscretionary = Math.round(spentDiscretionary / period.daysElapsed);
+  const projectedEndSpendDiscretionary =
+    spentDiscretionary + dailyBurnDiscretionary * period.daysRemaining;
+
   return {
     period: {
       start: period.start.toISOString(),
@@ -125,6 +149,9 @@ export function assembleBudgetState(input: BudgetInput): BudgetState {
     dailyBurn,
     projectedEndSpend,
     safeToSpend,
+    spentDiscretionary,
+    dailyBurnDiscretionary,
+    projectedEndSpendDiscretionary,
   };
 }
 
@@ -152,7 +179,7 @@ export async function getBudgetState(
   const [categories, transactions, bills, heldIntents, keptIntents] = await Promise.all([
     prisma.category.findMany({
       where: { userId },
-      select: { id: true, slug: true, limitPerPeriod: true },
+      select: { id: true, slug: true, limitPerPeriod: true, discretionary: true },
     }),
     prisma.transaction.findMany({
       where: { userId, occurredAt: { gte: period.start, lte: period.end } },
