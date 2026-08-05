@@ -1,4 +1,3 @@
-import type { Config } from "@netlify/functions";
 import { prisma } from "../../lib/db";
 import { runImportBatch } from "../../lib/import-runner";
 
@@ -50,6 +49,8 @@ export default async function handler(request: Request): Promise<Response> {
   }
 }
 
-export const config: Config = {
-  path: "/.netlify/functions/import-background",
-};
+// No `config.path` here on purpose. This function is already served at
+// /.netlify/functions/import-background from its filename, and `path` declares a
+// *custom* route — pointing one at the reserved /.netlify/ prefix duplicated the
+// built-in endpoint for no gain. Bundling it both ways confirmed the
+// -background suffix alone still yields invocationMode "background".

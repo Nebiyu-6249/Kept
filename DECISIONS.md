@@ -185,3 +185,37 @@ cascading to everything it owns — and rewritten from a fixed PRNG seed. Upsert
 would not have been enough: the dataset is anchored to "the last 90 days", so
 its dates move with the calendar and an upsert key containing `occurredAt`
 would accumulate a new copy every day.
+
+## Deployment
+
+**Functions stay at `src/netlify/functions`; `netlify.toml` sets `directory`.**
+§3 of the build specification fixes that path, so the config moved rather than
+the folder. Netlify's default is `netlify/functions` at the repository root,
+and the failure mode when it is wrong is silence: no cron, no background
+import, no error.
+
+**`config.path` was removed from `import-background`.** The function is already
+served at `/.netlify/functions/import-background` by virtue of its filename;
+`path` declares a *custom* route, and pointing one at the reserved `/.netlify/`
+prefix duplicated the built-in endpoint for no gain. Bundling it both ways
+confirmed the `-background` suffix alone still yields
+`invocationMode: "background"`.
+
+**`node_bundler = "esbuild"` is kept but is inert here.** §4.2 specifies it, and
+it would apply to any future v1 function. Both current functions are v2 ESM,
+which zip-it-and-ship-it always bundles with `nft` — verified by requesting
+esbuild and reading back `bundler: "nft"`.
+
+**The cron is declared twice, on purpose, and checked.** `netlify.toml` carries
+it because §4.2 says so; the function's own `config` export carries it because
+that is the v2 idiom and is what the bundler reads straight from the file. Two
+sources can drift, so `check:netlify` fails when they disagree.
+
+**`HOLD_WINDOW_MS` moved from `lib/env.ts` to `lib/intent-machine.ts`.** The
+client-side environment audit found that `intent-machine` — reachable from the
+`HoldCountdown` client component — imported the server env module for a
+constant that was never env-derived, which put `APP_TIMEZONE` and
+`VERDICT_DAILY_LIMIT` into the browser bundle. No secret leaked, since Next
+replaces non-public `process.env` reads with `undefined`, but server env
+plumbing should not ship at all. The unused `requireAnthropicKey` was dropped
+in the same pass.

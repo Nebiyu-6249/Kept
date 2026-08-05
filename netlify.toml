@@ -1,4 +1,9 @@
 [build]
+  # prisma migrate deploy runs against the real database during the build, so
+  # both DATABASE_URL and DIRECT_URL must be set for Builds, not just Functions.
+  # It is idempotent: a fresh deploy applies every migration, a redeploy reports
+  # "No pending migrations to apply". next build itself needs no database — every
+  # route is force-dynamic and nothing queries at build time.
   command = "prisma generate && prisma migrate deploy && next build"
   publish = ".next"
 
@@ -6,17 +11,32 @@
   package = "@netlify/plugin-nextjs"
 
 [functions]
+  # The build specification (§3) puts the functions under src/netlify/functions.
+  # Netlify defaults to netlify/functions at the repository root, so without this
+  # it would find zero functions and fail silently — no cron, no background
+  # import, no error message anywhere.
+  directory = "src/netlify/functions"
+
+  # Retained for any future v1 (CommonJS handler) function. Both functions here
+  # are v2 ESM, which zip-it-and-ship-it always bundles with nft regardless of
+  # this setting — verified by bundling them and reading back bundler=nft.
   node_bundler = "esbuild"
 
-# The nightly sweep is capped at 30s by the platform. Anything that does not fit
-# in that window is enqueued to the background function instead of run inline.
+  # nft does trace the Prisma query engine on its own through @prisma/client,
+  # verified by bundling without this line and finding
+  # libquery_engine-debian-openssl-3.0.x.so.node present anyway. It stays as
+  # insurance: native binary tracing is the part most likely to change under us,
+  # and the cost of being explicit is nothing.
+  included_files = ["node_modules/.prisma/client/**"]
+
+# One table per function. [functions.nightly-sweep] and [functions."nightly-sweep"]
+# are the same key to a TOML parser, so declaring both is a redefinition error and
+# the deploy dies before the build starts.
+#
+# Scheduled functions cap at 30s and receive no payload. runNightlySweep keeps a
+# 20s budget and reports when it stopped early.
+#
+# This schedule is duplicated in the function's own `export const config`.
+# scripts/check-netlify-config.ts asserts the two agree, so they cannot drift.
 [functions."nightly-sweep"]
   schedule = "0 20 * * *"
-
-# Prisma's query engine binary is not traced by esbuild; include it explicitly so
-# the bundled functions can reach the database.
-[functions."import-background"]
-  included_files = ["node_modules/.prisma/client/**"]
-
-[functions."nightly-sweep"]
-  included_files = ["node_modules/.prisma/client/**"]

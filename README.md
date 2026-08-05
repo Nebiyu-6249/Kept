@@ -177,19 +177,72 @@ npm run dev
 | `npm run check:no-secrets` | Scans the built client bundle for server secrets |
 | `npm run db:seed` | Rebuilds the demo dataset |
 
-### Environment
+---
 
-Never prefix any of these with `NEXT_PUBLIC_`. In Netlify, scope `DATABASE_URL`
-to Functions and Builds, and `ANTHROPIC_API_KEY` to Functions only.
+## Deploying to Netlify
+
+Run `npm run check:netlify` before every push. It parses `netlify.toml` and
+fails on the things that cost a whole build to discover — a duplicate function
+table, a functions directory Netlify will not look in, a schedule that
+disagrees with the one in the function's own config.
+
+### Environment variables
+
+Set these in **Site configuration → Environment variables**. Every one is
+server-side; **never prefix any of them with `NEXT_PUBLIC_`**, which would ship
+the value to the browser.
+
+| Variable | Scope | Why that scope |
+|---|---|---|
+| `DATABASE_URL` | **Functions + Builds** | The pooled Neon string. Functions query through it, and `prisma migrate deploy` needs it at build to resolve the datasource — missing it fails the build with `Environment variable not found: DATABASE_URL`. |
+| `DIRECT_URL` | **Builds** | The direct (unpooled) Neon string. `prisma migrate deploy` runs migrations over it during the build; missing it fails the build at the migration step, before `next build` starts. Runtime never uses it. |
+| `ANTHROPIC_API_KEY` | **Functions only** | Never needed at build. Scoping it to Functions keeps it out of the build environment entirely. |
+| `APP_TIMEZONE` | Functions + Builds | `Asia/Dubai`. Period boundaries and the `UsageCounter` day key. Falls back to `Asia/Dubai` if unset. |
+| `DEFAULT_CURRENCY` | Functions + Builds | `AED`. Falls back to `AED` if unset. |
+| `VERDICT_DAILY_LIMIT` | Functions | `100`. The daily cap on model calls. Falls back to `100` if unset. |
+
+`URL` and `DEPLOY_PRIME_URL` are provided by Netlify and are what
+`POST /api/import` uses to reach the background function. Nothing needs setting
+for those.
+
+**Verified:** no client bundle contains any of these names or values.
+`npm run check:no-secrets` scans the real build output for the literal secret
+values, for Anthropic SDK markers, and for any `NEXT_PUBLIC_` variable named
+like a credential.
+
+### The build command
 
 ```
-DATABASE_URL        Neon pooled connection string
-DIRECT_URL          Neon direct string, migrations only
-ANTHROPIC_API_KEY   server-side only
-APP_TIMEZONE        Asia/Dubai
-DEFAULT_CURRENCY    AED
-VERDICT_DAILY_LIMIT 100
+prisma generate && prisma migrate deploy && next build
 ```
+
+Each stage was checked against a real database:
+
+- **Fresh deploy** — `migrate deploy` applies every migration in
+  `prisma/migrations`.
+- **Redeploy** — `migrate deploy` reports *No pending migrations to apply* and
+  changes nothing. It is safe to run on every build.
+- **`next build` needs no database at all.** Every route is `force-dynamic`, so
+  nothing queries at build time; a build with `DATABASE_URL` and `DIRECT_URL`
+  unset still succeeds. The only build-time database requirement is the
+  migration step.
+
+### Functions
+
+The functions live at `src/netlify/functions`, which is where the build
+specification puts them. Netlify defaults to `netlify/functions` at the
+repository root, so `netlify.toml` sets `directory` explicitly. Getting this
+wrong fails silently: no cron, no background import, and no error anywhere.
+
+| Function | How it runs | What makes it so |
+|---|---|---|
+| `import-background` | Background, up to 15 min, returns 202 at once | The `-background` suffix **in the filename**. Renaming the file turns it back into a sync function bound by the 10s timeout. |
+| `nightly-sweep` | Scheduled, 20:00 UTC (midnight in Dubai), 30s cap | `schedule` in `netlify.toml`, mirrored in the function's own `config` export. `check:netlify` asserts the two agree. |
+
+Both were bundled with Netlify's own `zip-it-and-ship-it` to confirm the
+Prisma client, its `libquery_engine-*.so.node` binary and `schema.prisma` all
+land inside each function, that the `@/…` path aliases resolve, and that
+`import-background` reports `invocationMode: background`.
 
 ---
 

@@ -41,6 +41,11 @@ jobs:
 
       - run: npm ci
 
+      # Cheap and first: a bad netlify.toml fails the deploy at config parsing,
+      # before any build output exists to look at.
+      - name: Validate netlify.toml
+        run: npm run check:netlify
+
       - name: Generate Prisma client and apply migrations
         run: npx prisma generate && npx prisma migrate deploy
 

@@ -6,7 +6,17 @@
  * go" cannot quietly re-release an intent and inflate Kept.
  */
 
-import { HOLD_WINDOW_MS } from "./env";
+/**
+ * The hold window, §6.4. A fixed constant rather than configuration — 48 hours
+ * is the product, not a setting.
+ *
+ * It lives here rather than in lib/env.ts because this module is reachable from
+ * a client component (HoldCountdown), and importing the server env module from
+ * the client graph pulled APP_TIMEZONE and VERDICT_DAILY_LIMIT into the browser
+ * bundle. No secret leaked — Next replaces non-public process.env reads with
+ * undefined — but server env plumbing has no business being shipped at all.
+ */
+export const HOLD_WINDOW_MS = 48 * 60 * 60 * 1000;
 
 export type IntentState = "OPEN" | "HELD" | "PURCHASED" | "RELEASED" | "EXPIRED";
 export type IntentAction = "hold" | "purchase" | "release";

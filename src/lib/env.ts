@@ -11,9 +11,6 @@ export const VERDICT_DAILY_LIMIT = Number.parseInt(
   10,
 );
 
-/** Hold window in milliseconds. 48 hours, per §6.4. */
-export const HOLD_WINDOW_MS = 48 * 60 * 60 * 1000;
-
 /** A DECLINE intent with no action expires after this long (§6.4, nightly sweep). */
 export const DECLINE_EXPIRY_DAYS = 7;
 
@@ -25,12 +22,6 @@ export const PARSE_CHUNK_SIZE = 20;
 
 /** Maximum messages accepted by POST /api/import. */
 export const IMPORT_MAX_MESSAGES = 500;
-
-export function requireAnthropicKey(): string {
-  const key = process.env.ANTHROPIC_API_KEY;
-  if (!key) throw new Error("ANTHROPIC_API_KEY is not set");
-  return key;
-}
 
 /**
  * Absolute origin used by API routes to invoke the Netlify background function.
