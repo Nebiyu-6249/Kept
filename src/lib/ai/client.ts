@@ -21,7 +21,9 @@ let client: Anthropic | null = null;
 export function anthropic(): Anthropic {
   if (!client) {
     const apiKey = process.env.ANTHROPIC_API_KEY;
-    if (!apiKey) throw new AiUnavailableError("The policy check is not configured.");
+    // Neutral wording: this client serves both the verdict engine and the
+    // parser, and each caller phrases the failure for its own screen.
+    if (!apiKey) throw new AiUnavailableError("No model is configured on the server.");
     // Retries are handled here so the counter and the timeout stay in one place.
     client = new Anthropic({ apiKey, maxRetries: 0 });
   }
