@@ -1,5 +1,5 @@
-import type Anthropic from "@anthropic-ai/sdk";
-import { callTool, type Usage } from "./client";
+import { callStructured } from "./client";
+import type { StructuredSchema, Usage } from "./provider";
 import { VerdictOutputSchema, type CategoryHistory, type PromptRule } from "./schemas";
 import type { BudgetState } from "@/lib/budget-state";
 
@@ -32,10 +32,19 @@ How to write the reasoning:
 - Do not suggest investments, loans, credit products, or anything beyond this
   single purchase decision.`;
 
-export const VERDICT_TOOL: Anthropic.Tool = {
+/**
+ * §7.2's schema, unchanged in shape: the same five fields, the same types, the
+ * same enum, the same required list.
+ *
+ * `additionalProperties: false` is the one addition. OpenAI's strict structured
+ * outputs require it on every object — it constrains the model, not the data,
+ * and the payload this describes is identical to the one the tool schema
+ * described.
+ */
+export const VERDICT_SCHEMA: StructuredSchema = {
   name: "verdict",
   description: "Return the spending verdict for this single purchase intent.",
-  input_schema: {
+  schema: {
     type: "object",
     properties: {
       decision: { type: "string", enum: ["allow", "hold", "decline"] },
@@ -54,7 +63,8 @@ export const VERDICT_TOOL: Anthropic.Tool = {
       },
     },
     required: ["decision", "rule_ref", "reasoning", "affordable_now", "figure_cited"],
-  } as Anthropic.Tool.InputSchema,
+    additionalProperties: false,
+  },
 };
 
 export type VerdictRequest = {
@@ -94,14 +104,15 @@ export function buildVerdictUserMessage(input: VerdictInput): string {
 }
 
 export async function runVerdict(input: VerdictInput): Promise<VerdictResult> {
-  const { input: raw, usage } = await callTool({
+  const { output, usage } = await callStructured({
     system: VERDICT_SYSTEM_PROMPT,
     userMessage: buildVerdictUserMessage(input),
-    tool: VERDICT_TOOL,
+    schema: VERDICT_SCHEMA,
     maxTokens: 700,
   });
 
-  const parsed = VerdictOutputSchema.parse(raw);
+  // The schema is enforced by the provider; this is the second pair of eyes.
+  const parsed = VerdictOutputSchema.parse(output);
 
   // A citation the user cannot find is worse than no citation, so a ref that is
   // not in the supplied rules is dropped rather than displayed (§7.2).
@@ -122,5 +133,5 @@ export async function runVerdict(input: VerdictInput): Promise<VerdictResult> {
 
 /**
  * The local arithmetic fallback lives in lib/arithmetic-verdict.ts, not here:
- * /ask runs it in the browser, and this module imports the Anthropic SDK.
+ * /ask runs it in the browser, and this module reaches the model provider.
  */

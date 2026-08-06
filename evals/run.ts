@@ -270,9 +270,9 @@ async function main(): Promise<void> {
     return;
   }
 
-  if (!process.env.ANTHROPIC_API_KEY) {
+  if (!process.env.OPENAI_API_KEY) {
     console.error(
-      "\nANTHROPIC_API_KEY is not set. The eval suites call the live model.\n" +
+      "\nOPENAI_API_KEY is not set. The eval suites call the live model.\n" +
         "Run `npm run eval:validate` to check fixture integrity without a key.",
     );
     process.exit(1);

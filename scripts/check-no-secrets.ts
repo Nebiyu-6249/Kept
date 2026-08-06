@@ -3,7 +3,7 @@
  *
  * Run after `next build`. It walks the built client chunks and fails on the
  * literal secret values from the environment, on any NEXT_PUBLIC_ variable
- * whose name looks like a credential, and on the Anthropic SDK's own marker
+ * whose name looks like a credential, and on the model SDK's own marker
  * strings — the SDK being bundled client-side is itself the bug, whether or
  * not a key travelled with it.
  *
@@ -16,15 +16,16 @@ import { join } from "node:path";
 const CLIENT_DIRS = [".next/static"];
 
 /** Env vars whose value must never appear in a client chunk. */
-const SECRET_ENV_VARS = ["ANTHROPIC_API_KEY", "DATABASE_URL", "DIRECT_URL"];
+const SECRET_ENV_VARS = ["OPENAI_API_KEY", "DATABASE_URL", "DIRECT_URL"];
 
 /** Strings that indicate the server-only SDK was bundled for the browser. */
 const FORBIDDEN_MARKERS = [
   "x-api-key",
-  "anthropic-version",
+  "api.openai.com",
+  "sk-proj-",
   "sk-ant-",
   "postgresql://",
-  "@anthropic-ai/sdk",
+  "openai/resources/chat",
 ];
 
 function walk(dir: string): string[] {

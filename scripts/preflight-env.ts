@@ -186,19 +186,35 @@ if (!directUrl) {
   ok.push(`DIRECT_URL is a direct (unpooled) postgres URL (${redact(directUrl)})`);
 }
 
-/* ---------------------------------------------------- ANTHROPIC_API_KEY */
+/* ------------------------------------------------------- OPENAI_API_KEY */
 
-const anthropicKey = process.env.ANTHROPIC_API_KEY;
+const OPENAI_KEY_HOME =
+  "OpenAI platform → API keys. A project key starts sk-proj-, a legacy user key sk-.";
 
-if (anthropicKey) {
-  ok.push("ANTHROPIC_API_KEY is set");
+const openaiKey = process.env.OPENAI_API_KEY;
+
+if (openaiKey) {
+  if (!/^sk-/.test(openaiKey)) {
+    report({
+      severity: "WARN",
+      variable: "OPENAI_API_KEY",
+      problem: "Set, but does not start with `sk-`.",
+      neededBy: "the verdict engine and the SMS parser",
+      scope: "Functions only",
+      where: OPENAI_KEY_HOME,
+      fix: "It will be sent as-is. Check it is a key and not an organisation or project id.",
+    });
+  } else {
+    ok.push("OPENAI_API_KEY is set");
+  }
 } else if (runtimeMode) {
   report({
     severity: "FAIL",
-    variable: "ANTHROPIC_API_KEY",
+    variable: "OPENAI_API_KEY",
     problem: "Not set.",
     neededBy: "the verdict engine and the SMS parser",
     scope: "Functions only",
+    where: OPENAI_KEY_HOME,
   });
 } else {
   /*
@@ -209,15 +225,38 @@ if (anthropicKey) {
    */
   report({
     severity: "WARN",
-    variable: "ANTHROPIC_API_KEY",
+    variable: "OPENAI_API_KEY",
     problem: "Not visible to this build.",
     neededBy: "the verdict engine and the SMS parser, at runtime",
     scope: "Functions only",
+    where: OPENAI_KEY_HOME,
     fix:
       "Expected if it is scoped to Functions only, which is correct. A build cannot " +
       "see a Functions-scoped variable. If it is genuinely unset, /ask returns 503 " +
       "AI_UNAVAILABLE and falls back to arithmetic; import rows fail with a message.",
   });
+}
+
+/* --------------------------------------------------------- OPENAI_MODEL */
+
+const openaiModel = process.env.OPENAI_MODEL;
+if (!openaiModel) {
+  ok.push('OPENAI_MODEL not set, defaulting to "gpt-4.1"');
+} else if (/^(o[0-9]|gpt-5)/.test(openaiModel)) {
+  // §7.2 and §7.3 fix temperature at 0, and the reasoning models reject the
+  // parameter outright rather than ignoring it.
+  report({
+    severity: "WARN",
+    variable: "OPENAI_MODEL",
+    problem: `"${openaiModel}" looks like a reasoning model.`,
+    neededBy: "the verdict engine and the SMS parser",
+    scope: "Functions",
+    fix:
+      "The spec fixes temperature: 0, which the reasoning models do not accept. " +
+      "Re-run `npm run eval` after changing the model — the thresholds are the gate.",
+  });
+} else {
+  ok.push(`OPENAI_MODEL = "${openaiModel}"`);
 }
 
 /* ------------------------------------------------- defaulted, but checked */

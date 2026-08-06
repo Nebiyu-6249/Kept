@@ -3,7 +3,7 @@ import type { BudgetState } from "./budget-state";
 /**
  * The local fallback shown when the policy check cannot be reached (§11.3).
  *
- * This module deliberately imports nothing from the Anthropic SDK: /ask runs it
+ * This module deliberately imports no model SDK at all: /ask runs it
  * in the browser, from the BudgetState the server already sent, and the SDK
  * must never reach a client bundle.
  *

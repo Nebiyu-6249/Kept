@@ -9,7 +9,7 @@ const nextConfig: NextConfig = {
     // future lint config from silently gating deploys.
     ignoreDuringBuilds: true,
   },
-  serverExternalPackages: ["@prisma/client", "@anthropic-ai/sdk"],
+  serverExternalPackages: ["@prisma/client", "openai"],
   // Playwright drives the dev server over 127.0.0.1; without this Next warns on
   // every asset request. Dev only — it has no effect on a production build.
   allowedDevOrigins: ["127.0.0.1", "localhost"],

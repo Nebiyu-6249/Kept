@@ -1,34 +1,38 @@
-import Anthropic from "@anthropic-ai/sdk";
 import { prisma } from "@/lib/db";
 import { dayKey } from "@/lib/period";
 import { VERDICT_DAILY_LIMIT } from "@/lib/env";
+import type { AiProvider, StructuredRequest, Usage } from "./provider";
+import { OpenAiProvider } from "./providers/openai";
 
 /**
- * The single Anthropic client and the contract every model call goes through:
- * 25s abort, one retry on 429/5xx with 1s backoff, token usage recorded, and a
- * UsageCounter increment.
+ * The one call path, and the contract every model call goes through:
+ * 25s abort, one retry on 429/5xx with 1s backoff, token usage recorded on the
+ * row that triggered it, and a UsageCounter increment.
  *
  * On total failure the caller gets a typed error. It never gets a fabricated
- * result — /ask falls back to arithmetic it computed itself and says so.
+ * result — /ask falls back to arithmetic it computes itself and says so.
+ *
+ * The policy lives here rather than in a provider so swapping vendors cannot
+ * quietly change the timeout, the backoff, or the accounting.
  */
 
-export const MODEL = "claude-sonnet-4-6";
 const TIMEOUT_MS = 25_000;
 const RETRY_BACKOFF_MS = 1_000;
 
-let client: Anthropic | null = null;
+let provider: AiProvider | null = null;
 
-export function anthropic(): Anthropic {
-  if (!client) {
-    const apiKey = process.env.ANTHROPIC_API_KEY;
-    // Neutral wording: this client serves both the verdict engine and the
-    // parser, and each caller phrases the failure for its own screen.
-    if (!apiKey) throw new AiUnavailableError("No model is configured on the server.");
-    // Retries are handled here so the counter and the timeout stay in one place.
-    client = new Anthropic({ apiKey, maxRetries: 0 });
-  }
-  return client;
+/** The active provider. Swapping vendors is a change to this one function. */
+export function aiProvider(): AiProvider {
+  if (!provider) provider = new OpenAiProvider();
+  return provider;
 }
+
+/** Test seam: replace the provider, or pass null to restore the default. */
+export function setAiProvider(next: AiProvider | null): void {
+  provider = next;
+}
+
+export const MODEL_LABEL = (): string => `${aiProvider().vendor}/${aiProvider().model}`;
 
 export class AiUnavailableError extends Error {
   constructor(message: string) {
@@ -44,18 +48,9 @@ export class RateLimitedError extends Error {
   }
 }
 
-export type Usage = { inputTokens: number; outputTokens: number; latencyMs: number };
+export type { Usage } from "./provider";
 
-export type ToolCall<T> = { input: T; usage: Usage };
-
-function isRetryable(error: unknown): boolean {
-  if (error instanceof Anthropic.APIError) {
-    const status = error.status ?? 0;
-    return status === 429 || status >= 500;
-  }
-  // A network blip or an abort that was not ours.
-  return error instanceof Error && error.name === "APIConnectionError";
-}
+export type StructuredCall<T> = { output: T; usage: Usage };
 
 /**
  * Today's usage for a kind, in the app timezone. Checked before every call so
@@ -92,79 +87,54 @@ export async function incrementUsage(
 }
 
 /**
- * Call the model with a forced tool and return the tool input plus usage.
+ * Ask the model for one structured answer and return it with its usage.
  *
- * The tool is forced, so a well-formed response always carries exactly one
- * tool_use block. A response without one is a failure, not something to parse
- * out of the prose.
+ * The schema is enforced by the provider, so a well-formed response always
+ * parses. A response that does not is a failure, not something to salvage.
  */
-export async function callTool(options: {
-  system: string;
-  userMessage: string;
-  tool: Anthropic.Tool;
-  maxTokens: number;
-}): Promise<ToolCall<unknown>> {
+export async function callStructured(
+  request: StructuredRequest,
+): Promise<StructuredCall<unknown>> {
+  const active = aiProvider();
   const started = Date.now();
 
-  const attempt = async (): Promise<Anthropic.Message> => {
+  const once = async (): Promise<Awaited<ReturnType<AiProvider["attempt"]>>> => {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
     try {
-      return await anthropic().messages.create(
-        {
-          model: MODEL,
-          max_tokens: options.maxTokens,
-          temperature: 0,
-          system: options.system,
-          tools: [options.tool],
-          tool_choice: { type: "tool", name: options.tool.name },
-          messages: [{ role: "user", content: options.userMessage }],
-        },
-        { signal: controller.signal },
-      );
+      return await active.attempt(request, controller.signal);
     } finally {
       clearTimeout(timer);
     }
   };
 
-  let message: Anthropic.Message;
+  let response: Awaited<ReturnType<AiProvider["attempt"]>>;
   try {
-    message = await attempt();
+    response = await once();
   } catch (error) {
-    if (!isRetryable(error)) throw toAiError(error);
+    if (!active.isRetryable(error)) throw toTypedError(active, error);
     await new Promise((resolve) => setTimeout(resolve, RETRY_BACKOFF_MS));
     try {
-      message = await attempt();
+      response = await once();
     } catch (retryError) {
-      throw toAiError(retryError);
+      throw toTypedError(active, retryError);
     }
   }
 
-  const block = message.content.find(
-    (part): part is Anthropic.ToolUseBlock =>
-      part.type === "tool_use" && part.name === options.tool.name,
-  );
-  if (!block) {
-    throw new AiUnavailableError("The policy check came back in a shape we could not read.");
-  }
-
   return {
-    input: block.input,
+    output: response.output,
     usage: {
-      inputTokens: message.usage.input_tokens,
-      outputTokens: message.usage.output_tokens,
+      inputTokens: response.usage.inputTokens,
+      outputTokens: response.usage.outputTokens,
       latencyMs: Date.now() - started,
     },
   };
 }
 
-function toAiError(error: unknown): Error {
-  if (error instanceof Anthropic.APIError && error.status === 429) {
-    return new RateLimitedError("The policy check is rate limited right now. Try again shortly.");
-  }
-  if (error instanceof Error && error.name === "AbortError") {
-    return new AiUnavailableError("The policy check took too long to answer.");
-  }
+function toTypedError(active: AiProvider, error: unknown): Error {
   if (error instanceof AiUnavailableError || error instanceof RateLimitedError) return error;
-  return new AiUnavailableError("The policy check could not be reached.");
+  const described = active.describeError(error);
+  return described.kind === "rate_limit"
+    ? new RateLimitedError(described.message)
+    : new AiUnavailableError(described.message);
 }

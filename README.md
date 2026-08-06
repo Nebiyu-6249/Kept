@@ -75,11 +75,11 @@ does not make the decision.
               ┌─────────────────────────────┼──────────────────┐
               │                             │                  │
      ┌────────▼─────────┐        ┌──────────▼────────┐  ┌──────▼──────┐
-     │ Anthropic        │        │ Neon Postgres     │  │ Netlify     │
-     │ claude-sonnet-4-6│        │ via Prisma        │  │ functions   │
+     │ OpenAI           │        │ Neon Postgres     │  │ Netlify     │
+     │ gpt-4.1          │        │ via Prisma        │  │ functions   │
      │                  │        │                   │  │             │
-     │ verdict  (forced │        │ pooled at runtime │  │ import-     │
-     │   tool, 700 tok) │        │ direct for migrate│  │  background │
+     │ verdict  (strict │        │ pooled at runtime │  │ import-     │
+     │   json, 700 tok) │        │ direct for migrate│  │  background │
      │ parse-sms (2000  │        │                   │  │  (15 min)   │
      │   tok, 20/call)  │        │                   │  │ nightly-    │
      └──────────────────┘        └───────────────────┘  │  sweep (30s)│
@@ -92,11 +92,17 @@ verdict engine, `/ask`, the rail and `/insights` alike.
 
 ### Why the AI layer is shaped this way
 
-Both model calls force a tool, so a well-formed response always carries exactly
-one structured result — nothing is parsed out of prose. Every call goes through
+Both model calls use structured outputs (`response_format: json_schema`,
+`strict: true`), so a well-formed response always carries exactly one result
+matching the schema — nothing is parsed out of prose. Every call goes through
 one wrapper (`src/lib/ai/client.ts`) with a 25s abort, one retry on 429/5xx, and
 token usage recorded on the row that triggered it, so `/insights` reports a real
 cost rather than an estimate.
+
+The vendor sits behind `src/lib/ai/provider.ts`. `verdict.ts` and `parse-sms.ts`
+describe what they want — a prompt, a schema, a token budget — and never learn
+who answers; the timeout, the retry and the usage accounting live in the shared
+client so swapping vendors cannot quietly change them.
 
 When the model cannot be reached, `POST /api/verdict` returns **503 and creates
 no intent**. `/ask` then computes an arithmetic-only verdict in the browser from
@@ -161,7 +167,7 @@ insights and settings all render through it. There is no card anywhere.
 ## Running it
 
 ```bash
-cp .env.example .env        # fill in DATABASE_URL, DIRECT_URL, ANTHROPIC_API_KEY
+cp .env.example .env        # fill in DATABASE_URL, DIRECT_URL, OPENAI_API_KEY
 npm install
 npx prisma migrate deploy
 npm run db:seed             # idempotent: re-running leaves one copy, not two
@@ -214,7 +220,8 @@ which would ship the value to the browser.
 |---|---|---|---|
 | `DATABASE_URL` | **Functions + Builds** | Neon **pooled** (`-pooler` in host) | Functions query through it, and `prisma migrate deploy` needs it at build to resolve the datasource. Missing it fails the build with `Environment variable not found: DATABASE_URL`. |
 | `DIRECT_URL` | **Builds** | Neon **direct** (no `-pooler`) | `prisma migrate deploy` runs migrations over it during the production build. Missing it is the `P1012` failure. **Runtime never reads it** — verified by querying with it absent — so Builds-only is correct and sufficient. |
-| `ANTHROPIC_API_KEY` | **Functions only** | `sk-ant-…` | Never needed at build. Functions-only keeps it out of the build environment entirely. The build preflight reports it as a warning, not a failure, because a build genuinely cannot see a Functions-scoped variable. |
+| `OPENAI_API_KEY` | **Functions only** | `sk-proj-…` | Never needed at build. Functions-only keeps it out of the build environment entirely. The build preflight reports it as a warning, not a failure, because a build genuinely cannot see a Functions-scoped variable. |
+| `OPENAI_MODEL` | Functions | `gpt-4.1` (default) | Optional. Changing it changes what the evals measure, so re-run `npm run eval` after touching it. The preflight warns if it names a reasoning model, which will not accept the `temperature: 0` the spec fixes. |
 | `APP_TIMEZONE` | Functions + Builds | `Asia/Dubai` | Period boundaries and the `UsageCounter` day key. Defaults to `Asia/Dubai`. |
 | `DEFAULT_CURRENCY` | Functions + Builds | `AED` | Defaults to `AED`. |
 | `VERDICT_DAILY_LIMIT` | Functions | `100` | Daily cap on model calls. Defaults to `100`. |
@@ -224,7 +231,7 @@ which would ship the value to the browser.
 
 **Verified:** no client bundle contains any of these names or values.
 `npm run check:no-secrets` scans the real build output for the literal secret
-values, for Anthropic SDK markers, and for any `NEXT_PUBLIC_` variable named
+values, for OpenAI SDK markers, and for any `NEXT_PUBLIC_` variable named
 like a credential.
 
 ### Preflight
@@ -307,6 +314,11 @@ and one message whose amount is unreadable — which must come back as
 The fixtures are generated (`evals/build-fixtures.ts`) so every `budget_state`
 in them is internally consistent, and the runner re-checks that before spending
 a token. A fixture whose arithmetic does not add up tests nothing.
+
+**The suites are the gate on a provider or model change.** Both system prompts
+are the specification's, verbatim, and stay that way unless an eval run proves a
+specific change is needed. Changing `OPENAI_MODEL` changes what these numbers
+mean, so re-run them after touching it.
 
 ---
 

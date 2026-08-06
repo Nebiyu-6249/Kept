@@ -1,5 +1,5 @@
-import type Anthropic from "@anthropic-ai/sdk";
-import { callTool, type Usage } from "./client";
+import { callStructured } from "./client";
+import type { StructuredSchema, Usage } from "./provider";
 import { ParseOutputSchema, type ParsedRow } from "./schemas";
 import { PARSE_CHUNK_SIZE } from "@/lib/env";
 
@@ -25,10 +25,17 @@ For each input message return one object. Rules:
 Never guess an amount. If the amount is unreadable, set is_transaction true,
 amount_fils null, and confidence below 0.3 so a human reviews it.`;
 
-export const PARSE_TOOL: Anthropic.Tool = {
+/**
+ * §7.3's schema, unchanged in shape: `results`, one object per input, the same
+ * nine fields with the same types and the same required list.
+ *
+ * `additionalProperties: false` on both objects is the one addition, required
+ * by OpenAI's strict structured outputs. It constrains the model, not the data.
+ */
+export const PARSE_SCHEMA: StructuredSchema = {
   name: "extract_transactions",
   description: "Return one extraction per input message, in the order they were given.",
-  input_schema: {
+  schema: {
     type: "object",
     properties: {
       results: {
@@ -57,11 +64,13 @@ export const PARSE_TOOL: Anthropic.Tool = {
             "category_guess",
             "confidence",
           ],
+          additionalProperties: false,
         },
       },
     },
     required: ["results"],
-  } as Anthropic.Tool.InputSchema,
+    additionalProperties: false,
+  },
 };
 
 export type Correction = {
@@ -122,14 +131,15 @@ export async function parseMessages(
   messages: readonly string[],
   corrections: readonly Correction[] = [],
 ): Promise<ParseResult> {
-  const { input, usage } = await callTool({
+  const { output, usage } = await callStructured({
     system: PARSE_SYSTEM_PROMPT,
     userMessage: buildParseUserMessage(messages, corrections),
-    tool: PARSE_TOOL,
+    schema: PARSE_SCHEMA,
     maxTokens: 2000,
   });
 
-  const parsed = ParseOutputSchema.parse(input);
+  // The schema is enforced by the provider; this is the second pair of eyes.
+  const parsed = ParseOutputSchema.parse(output);
 
   // Results are indexed so a partial failure maps back to its input. Anything
   // the model dropped becomes a low-confidence row rather than vanishing.

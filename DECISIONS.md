@@ -260,3 +260,49 @@ It is scoped to Functions only, which is correct, so a build cannot see it —
 failing the build over its absence would punish the right configuration. It is
 a hard failure under `--runtime`, which is the mode that checks what a deployed
 function needs.
+
+## Providers
+
+**The vendor sits behind an interface; the call policy does not.**
+`src/lib/ai/provider.ts` defines one method — make a single structured call —
+plus two classifiers for errors. Everything that must be identical whoever
+answers (the 25s abort, the one retry on 429/5xx with 1s backoff, the token
+accounting, the `UsageCounter` increment, the rule that a failure is a typed
+error and never a fabricated result) lives in `client.ts`, above the seam.
+Putting the policy in the provider would mean every vendor reimplements it and
+a swap could quietly change the timeout or drop the retry. `verdict.ts` and
+`parse-sms.ts` import nothing vendor-specific.
+
+**Structured outputs replace the forced tool call.** `response_format:
+json_schema` with `strict: true` gives the same guarantee the forced
+`tool_choice` did: a response that matches the schema, or a failure. The Zod
+mirrors in `schemas.ts` still validate on the way in — the schema is the
+provider's promise, and that is the second pair of eyes.
+
+**`additionalProperties: false` is the only schema change.** Strict mode
+requires it on every object. It constrains the model, not the payload: the same
+five verdict fields with the same types, enum and required list, and the same
+nine extraction fields. `tests/ai-provider.test.ts` asserts both schemas still
+match §7.2 and §7.3 field for field, and that they satisfy strict mode's rules —
+OpenAI rejects a non-conforming strict schema with a 400 before the model runs,
+which is a slow way to learn it.
+
+**gpt-4.1, not a reasoning model.** §7.2 and §7.3 fix `temperature: 0`, and the
+o-series and gpt-5 reasoning models reject the parameter rather than ignoring
+it. Keeping the specified temperature mattered more than reaching for a newer
+tier. `OPENAI_MODEL` overrides it and the preflight warns when the override
+looks like a reasoning model.
+
+**Three failure modes are new with structured outputs, and all three are
+errors rather than salvage.** A refusal (`message.refusal`), a response cut off
+by the token budget (`finish_reason: "length"`), and unparseable content each
+throw. The tool-calling path could only fail by omitting the tool block; this
+path can return something that looks like an answer but is not one, and
+returning a partial verdict would be exactly the fabrication §7.1 forbids.
+
+**Both system prompts stay verbatim, including "through the provided tool".**
+The specification fixes their text and the instruction was not to rewrite them
+for the new model without eval evidence. That phrase now describes a mechanism
+that is not there, which is the first thing to test if the verdict suite comes
+in under threshold — but changing it on suspicion, with no scored run to
+compare against, would be guessing.
